@@ -30,6 +30,12 @@
  */
 package com.mhschmieder.epstoolkit.operators;
 
+import com.mhschmieder.epstoolkit.EpsWriter;
+import com.mhschmieder.graphicstoolkit.color.ColorConstants;
+import com.mhschmieder.graphicstoolkit.color.ColorMode;
+import com.mhschmieder.graphicstoolkit.color.ColorUtilities;
+import org.apache.commons.math3.util.FastMath;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -38,13 +44,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
-
-import org.apache.commons.math3.util.FastMath;
-
-import com.mhschmieder.epstoolkit.EpsWriter;
-import com.mhschmieder.graphicstoolkit.color.ColorConstants;
-import com.mhschmieder.graphicstoolkit.color.ColorMode;
-import com.mhschmieder.graphicstoolkit.color.ColorUtilities;
 
 /**
  * {@code EpsGraphicsOperators} is a wrapper class for EPS graphics operators,

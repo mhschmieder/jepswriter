@@ -30,12 +30,12 @@
  */
 package com.mhschmieder.epstoolkit.graphics;
 
+import com.mhschmieder.graphicstoolkit.DrawMode;
+
 import java.awt.BasicStroke;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-
-import com.mhschmieder.graphicstoolkit.DrawMode;
 
 /**
  * {@code EpsGraphicsUtilities} is a utility class for EPS-specific AWT based

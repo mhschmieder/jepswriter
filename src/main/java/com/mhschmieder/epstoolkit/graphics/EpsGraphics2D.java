@@ -30,6 +30,18 @@
  */
 package com.mhschmieder.epstoolkit.graphics;
 
+import com.mhschmieder.epstoolkit.EpsDocument;
+import com.mhschmieder.epstoolkit.operators.EpsGraphicsOperators;
+import com.mhschmieder.epstoolkit.operators.EpsImageOperators;
+import com.mhschmieder.graphicstoolkit.DrawMode;
+import com.mhschmieder.graphicstoolkit.GraphicsUtilities;
+import com.mhschmieder.graphicstoolkit.color.ColorMode;
+import com.mhschmieder.graphicstoolkit.font.FontUtilities;
+import com.mhschmieder.graphicstoolkit.image.ImageConversionUtilities;
+import com.mhschmieder.graphicstoolkit.shape.ShapeUtilities;
+import com.mhschmieder.graphicstoolkit.text.AttributedTextUtilities;
+import org.apache.commons.math3.util.FastMath;
+
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -68,19 +80,6 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
 import java.util.Map;
-
-import org.apache.commons.math3.util.FastMath;
-
-import com.mhschmieder.epstoolkit.EpsDocument;
-import com.mhschmieder.epstoolkit.operators.EpsGraphicsOperators;
-import com.mhschmieder.epstoolkit.operators.EpsImageOperators;
-import com.mhschmieder.graphicstoolkit.DrawMode;
-import com.mhschmieder.graphicstoolkit.GraphicsUtilities;
-import com.mhschmieder.graphicstoolkit.color.ColorMode;
-import com.mhschmieder.graphicstoolkit.font.FontUtilities;
-import com.mhschmieder.graphicstoolkit.image.ImageConversionUtilities;
-import com.mhschmieder.graphicstoolkit.shape.ShapeUtilities;
-import com.mhschmieder.graphicstoolkit.text.AttributedTextUtilities;
 
 /**
  * {@code EpsGraphics2D} is a graphics wrapper class that is suitable for

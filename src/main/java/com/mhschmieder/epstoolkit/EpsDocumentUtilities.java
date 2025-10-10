@@ -30,11 +30,10 @@
  */
 package com.mhschmieder.epstoolkit;
 
-import org.apache.commons.math3.util.FastMath;
-
 import com.mhschmieder.epstoolkit.dsc.EpsDscUtilities;
 import com.mhschmieder.epstoolkit.operators.EpsPageOperators;
 import com.mhschmieder.graphicstoolkit.GraphicsUtilities;
+import org.apache.commons.math3.util.FastMath;
 
 /**
  * {@code EpsDocumentUtilities} is a utility class for methods related to EPS

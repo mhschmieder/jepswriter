@@ -30,12 +30,12 @@
  */
 package com.mhschmieder.epstoolkit.operators;
 
-import java.awt.Color;
-
 import com.mhschmieder.epstoolkit.EpsWriter;
 import com.mhschmieder.graphicstoolkit.color.ColorConstants;
 import com.mhschmieder.graphicstoolkit.color.ColorMode;
 import com.mhschmieder.graphicstoolkit.color.ColorUtilities;
+
+import java.awt.Color;
 
 /**
  * {@code EpsImageOperators} is a wrapper class for EPS image operators, and for

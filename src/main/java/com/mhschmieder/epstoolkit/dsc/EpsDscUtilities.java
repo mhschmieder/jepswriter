@@ -30,9 +30,9 @@
  */
 package com.mhschmieder.epstoolkit.dsc;
 
-import java.time.LocalDate;
-
 import com.mhschmieder.epstoolkit.EpsVersionInfo;
+
+import java.time.LocalDate;
 
 /**
  * {@code EpsDscUtilities} is a utility class for methods related to Adobe's
