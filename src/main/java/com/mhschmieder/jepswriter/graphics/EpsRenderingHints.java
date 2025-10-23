@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/epstoolkit
  */
-package com.mhschmieder.epstoolkit.graphics;
+package com.mhschmieder.jepswriter.graphics;
 
 /**
  * {@code EpsRenderingHints} defines the Rendering Hints that can be used with

@@ -28,12 +28,12 @@
  *
  * Project: https://github.com/mhschmieder/epstoolkit
  */
-package com.mhschmieder.epstoolkit.operators;
+package com.mhschmieder.jepswriter.operators;
 
-import com.mhschmieder.epstoolkit.EpsWriter;
-import com.mhschmieder.graphicstoolkit.color.ColorConstants;
-import com.mhschmieder.graphicstoolkit.color.ColorMode;
-import com.mhschmieder.graphicstoolkit.color.ColorUtilities;
+import com.mhschmieder.jepswriter.EpsWriter;
+import com.mhschmieder.jgraphics.color.ColorConstants;
+import com.mhschmieder.jgraphics.color.ColorMode;
+import com.mhschmieder.jgraphics.color.ColorUtilities;
 import org.apache.commons.math3.util.FastMath;
 
 import java.awt.BasicStroke;

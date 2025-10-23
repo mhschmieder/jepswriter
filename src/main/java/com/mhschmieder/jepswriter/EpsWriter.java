@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/epstoolkit
  */
-package com.mhschmieder.epstoolkit;
+package com.mhschmieder.jepswriter;
 
 /**
  * {@code EpsWriter} is an interface that establishes the basic contract for

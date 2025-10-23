@@ -29,11 +29,11 @@
  * Project: https://github.com/mhschmieder/epstoolkit
  */
 /**
- * This package contains the EpsToolkit Library's functionality related to
- * Adobe's Document Structuring Conventions (DSC) Specification, applied to EPS.
+ * This package contains the EpsToolkit Library's classes that are specific to
+ * outputting the PostScript operators in a generic library-neutral fashion.
  *
  * @version 1.0
  *
  * @author Mark Schmieder
  */
-package com.mhschmieder.epstoolkit.dsc;
+package com.mhschmieder.jepswriter.operators;

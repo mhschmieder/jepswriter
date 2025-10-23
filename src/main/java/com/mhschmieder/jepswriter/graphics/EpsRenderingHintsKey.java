@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/epstoolkit
  */
-package com.mhschmieder.epstoolkit.graphics;
+package com.mhschmieder.jepswriter.graphics;
 
 import java.awt.RenderingHints;
 

@@ -28,11 +28,11 @@
  *
  * Project: https://github.com/mhschmieder/epstoolkit
  */
-package com.mhschmieder.epstoolkit;
+package com.mhschmieder.jepswriter;
 
-import com.mhschmieder.epstoolkit.dsc.EpsDscUtilities;
-import com.mhschmieder.epstoolkit.operators.EpsPageOperators;
-import com.mhschmieder.graphicstoolkit.GraphicsUtilities;
+import com.mhschmieder.jepswriter.dsc.EpsDscUtilities;
+import com.mhschmieder.jepswriter.operators.EpsPageOperators;
+import com.mhschmieder.jgraphics.GraphicsUtilities;
 import org.apache.commons.math3.util.FastMath;
 
 /**

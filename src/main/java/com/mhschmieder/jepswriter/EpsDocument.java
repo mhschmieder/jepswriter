@@ -28,9 +28,9 @@
  *
  * Project: https://github.com/mhschmieder/epstoolkit
  */
-package com.mhschmieder.epstoolkit;
+package com.mhschmieder.jepswriter;
 
-import com.mhschmieder.epstoolkit.graphics.EpsGraphics2D;
+import com.mhschmieder.jepswriter.graphics.EpsGraphics2D;
 
 /**
  * {@code EpsDocument} is a class that represents an EPS Document. Its methods

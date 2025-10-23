@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/epstoolkit
  */
-package com.mhschmieder.epstoolkit.operators;
+package com.mhschmieder.jepswriter.operators;
 
 /**
  * {@code EpsPageOperators} is a utility class for methods related to EPS page

@@ -28,9 +28,9 @@
  *
  * Project: https://github.com/mhschmieder/epstoolkit
  */
-package com.mhschmieder.epstoolkit.dsc;
+package com.mhschmieder.jepswriter.dsc;
 
-import com.mhschmieder.epstoolkit.EpsVersionInfo;
+import com.mhschmieder.jepswriter.EpsVersionInfo;
 
 import java.time.LocalDate;
 

@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.mhschmieder</groupId>
-    <artifactId>epstoolkit</artifactId>
+    <artifactId>jepswriter</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>epstoolkit</name>
-    <url>https://github.com/mhschmieder/epstoolkit</url>
+    <name>jepswriter</name>
+    <url>https://github.com/mhschmieder/jepswriter</url>
     <description>A Java AWT based library for creating Encapsulated PostScript (EPS) output via a custom Graphics2D canvas.</description>
 
     <licenses>
@@ -21,9 +21,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/mhschmieder/epstoolkit</url>
-        <connection>scm:git:git://github.com/mhschmieder/epstoolkit.git</connection>
-        <developerConnection>scm:git:git@github.com:mhschmieder/epstoolkit.git</developerConnection>
+        <url>https://github.com/mhschmieder/jepswriter</url>
+        <connection>scm:git:git://github.com/mhschmieder/jepswriter.git</connection>
+        <developerConnection>scm:git:git@github.com:mhschmieder/jepswriter.git</developerConnection>
     </scm>
 
     <developers>
@@ -41,7 +41,7 @@
     <dependencies>
         <dependency>
             <groupId>com.mhschmieder</groupId>
-            <artifactId>graphicstoolkit</artifactId>
+            <artifactId>jgraphics</artifactId>
             <version>0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

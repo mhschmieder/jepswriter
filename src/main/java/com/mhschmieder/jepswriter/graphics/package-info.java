@@ -29,11 +29,11 @@
  * Project: https://github.com/mhschmieder/epstoolkit
  */
 /**
- * This package contains the EpsToolkit Library's top-level classes, enums, and
- * interfaces, that are the ones most likely to be used by third-party codes.
+ * This package contains the EpsToolkit Library's classes that are specific to
+ * using an AWT-based Graphics2D wrapper for EPS output.
  *
  * @version 1.0
  *
  * @author Mark Schmieder
  */
-package com.mhschmieder.epstoolkit;
+package com.mhschmieder.jepswriter.graphics;

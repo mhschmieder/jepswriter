@@ -28,18 +28,18 @@
  *
  * Project: https://github.com/mhschmieder/epstoolkit
  */
-package com.mhschmieder.epstoolkit.graphics;
+package com.mhschmieder.jepswriter.graphics;
 
-import com.mhschmieder.epstoolkit.EpsDocument;
-import com.mhschmieder.epstoolkit.operators.EpsGraphicsOperators;
-import com.mhschmieder.epstoolkit.operators.EpsImageOperators;
-import com.mhschmieder.graphicstoolkit.DrawMode;
-import com.mhschmieder.graphicstoolkit.GraphicsUtilities;
-import com.mhschmieder.graphicstoolkit.color.ColorMode;
-import com.mhschmieder.graphicstoolkit.font.FontUtilities;
-import com.mhschmieder.graphicstoolkit.image.ImageConversionUtilities;
-import com.mhschmieder.graphicstoolkit.shape.ShapeUtilities;
-import com.mhschmieder.graphicstoolkit.text.AttributedTextUtilities;
+import com.mhschmieder.jepswriter.EpsDocument;
+import com.mhschmieder.jepswriter.operators.EpsGraphicsOperators;
+import com.mhschmieder.jepswriter.operators.EpsImageOperators;
+import com.mhschmieder.jgraphics.DrawMode;
+import com.mhschmieder.jgraphics.GraphicsUtilities;
+import com.mhschmieder.jgraphics.color.ColorMode;
+import com.mhschmieder.jgraphics.font.FontUtilities;
+import com.mhschmieder.jgraphics.image.ImageConversionUtilities;
+import com.mhschmieder.jgraphics.shape.ShapeUtilities;
+import com.mhschmieder.jgraphics.text.AttributedTextUtilities;
 import org.apache.commons.math3.util.FastMath;
 
 import java.awt.AlphaComposite;

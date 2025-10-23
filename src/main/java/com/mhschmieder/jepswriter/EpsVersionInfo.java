@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/epstoolkit
  */
-package com.mhschmieder.epstoolkit;
+package com.mhschmieder.jepswriter;
 
 /**
  * {@code EpsVersionInfo} is a container class for EpsToolkit Library naming and

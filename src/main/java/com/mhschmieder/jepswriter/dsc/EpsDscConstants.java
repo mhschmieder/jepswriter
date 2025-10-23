@@ -28,12 +28,37 @@
  *
  * Project: https://github.com/mhschmieder/epstoolkit
  */
+package com.mhschmieder.jepswriter.dsc;
+
 /**
- * This package contains the EpsToolkit Library's classes that are specific to
- * outputting the PostScript operators in a generic library-neutral fashion.
+ * {@code EpsDscConstants} is a container class for constants needed by the DSC
+ * Header in order to comply with its specifications.
  *
  * @version 1.0
  *
  * @author Mark Schmieder
  */
-package com.mhschmieder.epstoolkit.operators;
+public class EpsDscConstants {
+
+    /**
+     * The default constructor is disabled, as this is a static constants class.
+     */
+    private EpsDscConstants() {}
+
+    /**
+     * Static declaration of the DSC Conformance Level for EPS files produced by
+     * this library, as determined by a canvas of current applications and their
+     * disappointingly low conformance levels. Settings this higher,
+     * unfortunately crashes well-known widely-used professional applications.
+     */
+    @SuppressWarnings("nls") public static final String DSC_CONFORMANCE_LEVEL  = "3.0";
+
+    /**
+     * Static declaration of the EPSF Conformance Level for EPS files produced
+     * by this library, as determined by a canvas of current applications and
+     * their disappointingly low conformance levels. Settings this higher,
+     * unfortunately crashes well-known widely-used professional applications.
+     */
+    @SuppressWarnings("nls") public static final String EPSF_CONFORMANCE_LEVEL = "3.0";
+
+}

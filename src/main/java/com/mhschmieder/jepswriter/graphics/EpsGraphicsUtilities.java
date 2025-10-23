@@ -28,9 +28,9 @@
  *
  * Project: https://github.com/mhschmieder/epstoolkit
  */
-package com.mhschmieder.epstoolkit.graphics;
+package com.mhschmieder.jepswriter.graphics;
 
-import com.mhschmieder.graphicstoolkit.DrawMode;
+import com.mhschmieder.jgraphics.DrawMode;
 
 import java.awt.BasicStroke;
 import java.awt.Stroke;

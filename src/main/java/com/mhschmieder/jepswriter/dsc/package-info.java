@@ -29,11 +29,11 @@
  * Project: https://github.com/mhschmieder/epstoolkit
  */
 /**
- * This package contains the EpsToolkit Library's classes that are specific to
- * using an AWT-based Graphics2D wrapper for EPS output.
+ * This package contains the EpsToolkit Library's functionality related to
+ * Adobe's Document Structuring Conventions (DSC) Specification, applied to EPS.
  *
  * @version 1.0
  *
  * @author Mark Schmieder
  */
-package com.mhschmieder.epstoolkit.graphics;
+package com.mhschmieder.jepswriter.dsc;
