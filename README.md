@@ -1,5 +1,6 @@
-# EpsToolkit
-The EpsToolkit library is an open source project for Java 8 that redirects screen output to a single page in EPS format using class inheritance from AWT's Graphics2D canvas-based "paintComponent()" screen refresh renderer.
+# JEpsWriter
+
+The JEpsWriter library is an open source project for Java 8 that redirects screen output to a single page in EPS format using class inheritance from AWT's Graphics2D canvas-based "paintComponent()" screen refresh renderer.
 
 There are many different purposes that people have in exporting vector graphics from a GUI application. In some cases, they may want screenshots that are vectorized vs. rasterized, so that they scale better. Sometimes the EPS might be part of report generation. The focus of this particular library is more on the specific needs of scientific visualization applications, which can have huge data sets that involve many geometric entities and bitmap images being written to the EPS file.
 
@@ -27,4 +28,4 @@ The Javadocs are 100% compliant and complete, but I am still learning how to pub
 
 As a confidence boost at both ends, EpsGraphicsUtilities has a main() function that prints "Hello Maven from EpsToolkit" to the console (e.g. the one in Eclipse IDE). By running Maven's clean task, then the install task, you can quickly gain confidence that everything is integrated properly, by then running the main class and seeing the console and confirming that this library was the source of the validation message.
 
-This projects depends on my GraphicsToolkit library, and is marked as such in the Maven POM file.
+This projects depends on my JGraphics library, and is marked as such in the Maven POM file.
