@@ -21,18 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the EpsToolkit Library
+ * This file is part of the jepswriter Library
  *
- * You should have received a copy of the MIT License along with the
- * EpsToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the jepswriter
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/epstoolkit
+ * Project: https://github.com/mhschmieder/jepswriter
  */
 package com.mhschmieder.jepswriter;
 
 import com.mhschmieder.jepswriter.dsc.EpsDscUtilities;
 import com.mhschmieder.jepswriter.operators.EpsPageOperators;
-import com.mhschmieder.jgraphics.GraphicsUtilities;
+import com.mhschmieder.jgraphics.util.GraphicsUtilities;
 import org.apache.commons.math3.util.FastMath;
 
 /**

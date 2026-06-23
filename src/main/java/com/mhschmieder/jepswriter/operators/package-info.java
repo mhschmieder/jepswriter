@@ -21,15 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the EpsToolkit Library
+ * This file is part of the jepswriter Library
  *
- * You should have received a copy of the MIT License along with the
- * EpsToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the jepswriter
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/epstoolkit
+ * Project: https://github.com/mhschmieder/jepswriter
  */
 /**
- * This package contains the EpsToolkit Library's classes that are specific to
+ * This package contains the jepswriter Library's classes that are specific to
  * outputting the PostScript operators in a generic library-neutral fashion.
  *
  * @version 1.0

@@ -21,25 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the EpsToolkit Library
+ * This file is part of the jepswriter Library
  *
- * You should have received a copy of the MIT License along with the
- * EpsToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the jepswriter
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/epstoolkit
+ * Project: https://github.com/mhschmieder/jepswriter
  */
 package com.mhschmieder.jepswriter.graphics;
 
 import com.mhschmieder.jepswriter.EpsDocument;
 import com.mhschmieder.jepswriter.operators.EpsGraphicsOperators;
 import com.mhschmieder.jepswriter.operators.EpsImageOperators;
-import com.mhschmieder.jgraphics.DrawMode;
-import com.mhschmieder.jgraphics.GraphicsUtilities;
 import com.mhschmieder.jgraphics.color.ColorMode;
 import com.mhschmieder.jgraphics.font.FontUtilities;
 import com.mhschmieder.jgraphics.image.ImageConversionUtilities;
+import com.mhschmieder.jgraphics.shape.DrawMode;
 import com.mhschmieder.jgraphics.shape.ShapeUtilities;
 import com.mhschmieder.jgraphics.text.AttributedTextUtilities;
+import com.mhschmieder.jgraphics.util.GraphicsUtilities;
 import org.apache.commons.math3.util.FastMath;
 
 import java.awt.AlphaComposite;
@@ -1110,7 +1110,8 @@ public final class EpsGraphics2D extends Graphics2D {
                 .epsDrawShape( epsDocument,
                                shape,
                                epsTransform,
-                               EpsGraphicsUtilities.getEpsDrawMode( DrawMode.FILL, stroke ) );
+                               EpsGraphicsUtilities.getEpsDrawMode(
+                                       DrawMode.FILL, stroke ) );
     }
 
     /**
