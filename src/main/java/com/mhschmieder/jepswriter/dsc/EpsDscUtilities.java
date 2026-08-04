@@ -44,40 +44,39 @@ import java.time.LocalDate;
  * <p>
  * Visit the web address below, for the PDF version of the DSC specifications:
  * <p>
- * https://www.adobe.com/content/dam/acom/en/devnet/actionscript/articles/5001.DSC_Spec.pdf
- *
- * @version 1.0
+ * https://www.adobe.com/content/dam/acom/en/devnet/actionscript/articles
+ * /5001.DSC_Spec.pdf
  *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public final class EpsDscUtilities {
-
-    /**
-     * The default constructor is disabled, as this is a static utilities class.
-     */
-    private EpsDscUtilities() {}
 
     /**
      * Static declaration of the specification-compliant EPS Document
      * Identification Comment for the DSC Header, to avoid programmer error
      * leading to EPS documents that won't load in downstream applications.
      */
-    @SuppressWarnings("nls") public static final String EPS_DOCUMENT_IDENTIFICATION_COMMENT =
-                                                                                            "%!PS-Adobe-"
-                                                                                                    + EpsDscConstants.DSC_CONFORMANCE_LEVEL
-                                                                                                    + " "
-                                                                                                    + "EPSF-"
-                                                                                                    + EpsDscConstants.EPSF_CONFORMANCE_LEVEL;
-
+    @SuppressWarnings( "nls" )
+    public static final String EPS_DOCUMENT_IDENTIFICATION_COMMENT =
+            "%!PS-Adobe-" + EpsDscConstants.DSC_CONFORMANCE_LEVEL + " "
+            + "EPSF-" + EpsDscConstants.EPSF_CONFORMANCE_LEVEL;
     /**
      * Static declaration of a default specification-compliant EPS Document
      * Creator Comment for the DSC Header, to avoid programmer error leading to
      * EPS documents that won't load in downstream applications.
      */
-    @SuppressWarnings("nls") public static final String DEFAULT_DOCUMENT_CREATOR            =
-                                                                                 EpsVersionInfo.LIBRARY_RELEASE_NAME
-                                                                                         + ", "
-                                                                                         + EpsVersionInfo.LIBRARY_REPOSITORY_LOCATION;
+    @SuppressWarnings( "nls" )
+    public static final String DEFAULT_DOCUMENT_CREATOR =
+            EpsVersionInfo.LIBRARY_RELEASE_NAME + ", "
+            + EpsVersionInfo.LIBRARY_REPOSITORY_LOCATION;
+
+    /**
+     * The default constructor is disabled, as this is a static utilities
+     * class.
+     */
+    private EpsDscUtilities() {
+    }
 
     /**
      * Writes the DSC Header to the specified {@link StringBuilder}.
@@ -87,7 +86,8 @@ public final class EpsDscUtilities {
      * line confirming that the file conforms to Version 3 of the EPS format,
      * and the Bounding Box comment. It is in fact often safer to leave out many
      * of the other header comments, as not all clients and readers support
-     * them, or do so properly. The ones that are deemed safe are included here.
+     * them, or do so properly. The ones that are deemed safe are included
+     * here.
      * <p>
      * We specify 8-Bit Document Data (vs. 7-Bit), because there may be issues
      * otherwise with Titles and other fields specified in languages other than
@@ -95,24 +95,19 @@ public final class EpsDscUtilities {
      * <p>
      * It is up to the caller to ensure that the Bounding Box is positive.
      *
-     * @param stringBuilder
-     *            The {@link StringBuilder} for appending the DSC Header
-     * @param title
-     *            The {@link String} to use as the EPS Document's title
-     * @param creator
-     *            The {@link String} to use as the EPS Document's creator
-     * @param boundingBoxMinX
-     *            The lower left x-coordinate of the bounding box
-     * @param boundingBoxMinY
-     *            The lower left y-coordinate of the bounding box
-     * @param boundingBoxMaxX
-     *            The upper right x-coordinate of the bounding box
-     * @param boundingBoxMaxY
-     *            The upper right y-coordinate of the bounding box
-     *
+     * @param stringBuilder   The {@link StringBuilder} for appending the DSC
+     *                        Header
+     * @param title           The {@link String} to use as the EPS Document's
+     *                        title
+     * @param creator         The {@link String} to use as the EPS Document's
+     *                        creator
+     * @param boundingBoxMinX The lower left x-coordinate of the bounding box
+     * @param boundingBoxMinY The lower left y-coordinate of the bounding box
+     * @param boundingBoxMaxX The upper right x-coordinate of the bounding box
+     * @param boundingBoxMaxY The upper right y-coordinate of the bounding box
      * @since 1.0
      */
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     public static void writeDscHeader( final StringBuilder stringBuilder,
                                        final String title,
                                        final String creator,
@@ -122,8 +117,8 @@ public final class EpsDscUtilities {
                                        final int boundingBoxMaxY ) {
         // Make a default Title if none was provided, or if empty.
         final String titleVerified = ( ( title == null ) || title.isEmpty() )
-            ? "The EPS Document"
-            : title;
+                                     ? "The EPS Document"
+                                     : title;
 
         // In case no creator was provided, use this library as the default.
         //
@@ -131,9 +126,10 @@ public final class EpsDscUtilities {
         // composition software, which must be provided by clients of this
         // library, but if none is provided, stating this library as the
         // document's creator is a good fallback vs. leaving it blank.
-        final String creatorVerified = ( ( creator == null ) || creator.isEmpty() )
-            ? DEFAULT_DOCUMENT_CREATOR
-            : creator;
+        final String creatorVerified = ( ( creator == null )
+                                         || creator.isEmpty() )
+                                       ? DEFAULT_DOCUMENT_CREATOR
+                                       : creator;
 
         // Grab the current date and time in ISO format so we can extract an
         // ISO-compatible locale-sensitive date at the level of resolution we
@@ -191,12 +187,11 @@ public final class EpsDscUtilities {
     /**
      * Writes the DSC Footer to the specified {@link StringBuilder}.
      *
-     * @param stringBuilder
-     *            The {@link StringBuilder} for appending the DSC Footer
-     *
+     * @param stringBuilder The {@link StringBuilder} for appending the DSC
+     *                      Footer
      * @since 1.0
      */
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     public static void writeDscFooter( final StringBuilder stringBuilder ) {
         // Write the DSC-compliant EPS footer (i.e., with Adobe PostScript
         // Document Structuring Comments); this is mostly just an "EOF" Comment,
@@ -204,5 +199,4 @@ public final class EpsDscUtilities {
         stringBuilder.append( "\n" );
         stringBuilder.append( "%%EOF" );
     }
-
 }

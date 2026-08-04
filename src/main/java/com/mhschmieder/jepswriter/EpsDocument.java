@@ -36,7 +36,8 @@ import com.mhschmieder.jepswriter.graphics.EpsGraphics2D;
  * {@code EpsDocument} is a class that represents an EPS Document. Its methods
  * adhere to Adobe's Encapsulated PostScript (EPS) File Format Specification:
  * <p>
- * https://www.adobe.com/content/dam/acom/en/devnet/actionscript/articles/5002.EPSF_Spec.pdf
+ * https://www.adobe.com/content/dam/acom/en/devnet/actionscript/articles
+ * /5002.EPSF_Spec.pdf
  * <p>
  * EPS is a specialized form of PostScript that complies with the Document
  * Structuring Conventions (DSC) and is intended to be embedded inside another
@@ -88,22 +89,21 @@ import com.mhschmieder.jepswriter.graphics.EpsGraphics2D;
  *                                                 maxY );
  * </pre>
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public class EpsDocument implements EpsWriter {
 
     /**
+     * The {@link StringBuilder} that incrementally accumulates the EPS
+     * content.
+     */
+    private final StringBuilder contentStringBuilder;
+    /**
      * This is a cache of the {@link EpsGraphics2D} instance to use with this
      * {@link EpsDocument} for redirecting normal screen output to EPS output.
      */
-    private EpsGraphics2D       graphicsContext;
-
-    /**
-     * The {@link StringBuilder} that incrementally accumulates the EPS content.
-     */
-    private final StringBuilder contentStringBuilder;
+    private EpsGraphics2D graphicsContext;
 
     //////////////////////////// Constructors ////////////////////////////////
 
@@ -130,12 +130,10 @@ public class EpsDocument implements EpsWriter {
      * component or between incremental invocations.
      * <p>
      * Basic parameters for the DXC Header, such as Title, Creator, Bounding
-     * Box,
-     * Page Width, and Page Height, are deferred until {@link #getEpsDocument}
-     * is
-     * invoked, so that the client code has complete flexibility in when to
-     * query
-     * the user for input, as well as how it determines the final bounding box.
+     * Box, Page Width, and Page Height, are deferred until
+     * {@link #getEpsDocument} is invoked, so that the client code has complete
+     * flexibility in when to query the user for input, as well as how it
+     * determines the final bounding box.
      *
      * @since 1.0
      */
@@ -156,7 +154,6 @@ public class EpsDocument implements EpsWriter {
      * Returns the {@link EpsGraphics2D} instance for drawing to the page.
      *
      * @return The {@code EpsGraphics2D} instance for drawing to the page.
-     *
      * @since 1.0
      */
     public final EpsGraphics2D getGraphics2D() {
@@ -180,14 +177,12 @@ public class EpsDocument implements EpsWriter {
      * files may be sent back and forth between users on different OS's, the
      * burden is on the EPS Viewer application to handle the line separators.
      *
-     * @param contentLine
-     *            The {@link String} to append to the end of the EPS Document as
-     *            a new content line
-     *
+     * @param contentLine The {@link String} to append to the end of the EPS
+     *                    Document as a new content line
      * @since 1.0
      */
     @Override
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     public void append( final String contentLine ) {
         // Append the content line, along with a new line character, to the end
         // of the content-specific String Builder.
@@ -204,31 +199,23 @@ public class EpsDocument implements EpsWriter {
      * must be self-consistent. They are used to scale the graphics operations
      * to avoid clipping, and are specified from the point of view of paper
      * oriented actions such as typing and printing, with the minimum (x, y)
-     * coordinates at top of page and the maximum coordinates at bottom of page.
+     * coordinates at top of page and the maximum coordinates at bottom of
+     * page.
      *
-     * @param title
-     *            The {@link String} to use as the EPS Document's title
-     * @param creator
-     *            The {@link String} to use as the EPS Document's creator
-     * @param pageWidth
-     *            The target page width, in points (1/72 inch)
-     * @param pageHeight
-     *            The target page height, in points (1/72 inch)
-     * @param minX
-     *            The x-coordinate of the EPS content top left corner
-     *            (unit-agnostic)
-     * @param minY
-     *            The y-coordinate of the EPS content top left corner
-     *            (unit-agnostic)
-     * @param maxX
-     *            The x-coordinate of the EPS content bottom right corner
-     *            (unit-agnostic)
-     * @param maxY
-     *            The y-coordinate of the EPS content bottom right corner
-     *            (unit-agnostic)
-     *
+     * @param title      The {@link String} to use as the EPS Document's title
+     * @param creator    The {@link String} to use as the EPS Document's
+     *                   creator
+     * @param pageWidth  The target page width, in points (1/72 inch)
+     * @param pageHeight The target page height, in points (1/72 inch)
+     * @param minX       The x-coordinate of the EPS content top left corner
+     *                   (unit-agnostic)
+     * @param minY       The y-coordinate of the EPS content top left corner
+     *                   (unit-agnostic)
+     * @param maxX       The x-coordinate of the EPS content bottom right corner
+     *                   (unit-agnostic)
+     * @param maxY       The y-coordinate of the EPS content bottom right corner
+     *                   (unit-agnostic)
      * @return The String that represents the entire EPS Document
-     *
      * @since 1.0
      */
     @Override
@@ -274,5 +261,4 @@ public class EpsDocument implements EpsWriter {
 
         return document;
     }
-
 }

@@ -43,16 +43,17 @@ package com.mhschmieder.jepswriter.operators;
  * floating-point, to be compatible with the largest number of EPS clients, as
  * the EPS format generally requires single-precision precision and integers.
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public final class EpsPageOperators {
 
     /**
-     * The default constructor is disabled, as this is a static utilities class.
+     * The default constructor is disabled, as this is a static utilities
+     * class.
      */
-    private EpsPageOperators() {}
+    private EpsPageOperators() {
+    }
 
     /**
      * Start the current page's content flow and set the PostScript graphics
@@ -65,20 +66,17 @@ public final class EpsPageOperators {
      * paths/shapes), is all for nothing, as fonts still render upside-down in
      * such cases, so we would have to force Vectorized Text Mode in all cases.
      *
-     * @param stringBuilder
-     *            The {@link StringBuilder} for appending the EPS start page
-     * @param upperLeftX
-     *            The upper left x-coordinate of the writable area, in EPS
-     *            page units (points, 1/72 inch)
-     * @param upperLeftY
-     *            The upper left y-coordinate of the writable area, in EPS
-     *            page units (points, 1/72 inch)
-     * @param scaleFactor
-     *            The scale factor for going from the source to the page
-     *
+     * @param stringBuilder The {@link StringBuilder} for appending the EPS
+     *                      start page
+     * @param upperLeftX    The upper left x-coordinate of the writable area, in
+     *                      EPS page units (points, 1/72 inch)
+     * @param upperLeftY    The upper left y-coordinate of the writable area, in
+     *                      EPS page units (points, 1/72 inch)
+     * @param scaleFactor   The scale factor for going from the source to the
+     *                      page
      * @since 1.0
      */
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     public static void epsStartPage( final StringBuilder stringBuilder,
                                      final float upperLeftX,
                                      final float upperLeftY,
@@ -93,22 +91,22 @@ public final class EpsPageOperators {
         // The EPS specifications require the global translate operator to come
         // before the global scale operator, so the translation factor's offsets
         // are specified in page units (that is, pre-scaled).
-        stringBuilder.append( Float.toString( upperLeftX ) + " " + Float.toString( upperLeftY )
-                + " translate\n" );
-        stringBuilder.append( Float.toString( scaleFactor ) + " " + Float.toString( scaleFactor )
-                + " scale\n" );
+        stringBuilder.append( Float.toString( upperLeftX ) + " "
+                              + Float.toString( upperLeftY ) + " translate\n" );
+        stringBuilder.append(
+                Float.toString( scaleFactor ) + " " + Float.toString(
+                        scaleFactor ) + " scale\n" );
     }
 
     /**
      * End the current page's content flow and close the PostScript graphics
      * state encapsulation (accounting for clipping, when present).
      *
-     * @param stringBuilder
-     *            The {@link StringBuilder} for appending the EPS end page
-     *
+     * @param stringBuilder The {@link StringBuilder} for appending the EPS end
+     *                      page
      * @since 1.0
      */
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     public static void epsEndPage( final StringBuilder stringBuilder ) {
         // Close the PostScript encapsulation of the main content before writing
         // the EPS footer and "EOF", using the PostScript "grestore" command.
@@ -117,5 +115,4 @@ public final class EpsPageOperators {
         // Each PostScript page is ended using exactly one "showpage" command.
         stringBuilder.append( "showpage\n" );
     }
-
 }

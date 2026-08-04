@@ -41,11 +41,17 @@ import java.awt.geom.Point2D;
  * {@code EpsGraphicsUtilities} is a utility class for EPS-specific AWT based
  * graphics methods, usable in either the AWT or Swing GUI toolkits.
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public final class EpsGraphicsUtilities {
+
+    /**
+     * The default constructor is disabled, as this is a static utilities
+     * class.
+     */
+    private EpsGraphicsUtilities() {
+    }
 
     /**
      * This method serves merely as a sanity check that the Maven integration
@@ -55,20 +61,13 @@ public final class EpsGraphicsUtilities {
      * complex projects with dependencies (this project is quite simple and has
      * no dependencies at this time, until more functionality is added).
      *
-     * @param args
-     *            The command-line arguments for executing this class as the
-     *            main entry point for an application
-     *
+     * @param args The command-line arguments for executing this class as the
+     *             main entry point for an application
      * @since 1.0
      */
     public static void main( final String[] args ) {
         System.out.println( "Hello Maven from EpsToolkit!" ); //$NON-NLS-1$
     }
-
-    /**
-     * The default constructor is disabled, as this is a static utilities class.
-     */
-    private EpsGraphicsUtilities() {}
 
     /**
      * Returns a point (as two coordinates), after it has been transformed by
@@ -78,15 +77,13 @@ public final class EpsGraphicsUtilities {
      * y-down coordinate system bases, as this is necessary for mapping screen
      * coordinates to paper when following the EPS "y-up" specifications.
      *
-     * @param matrix
-     *            The Affine Transform to apply to the supplied point
-     * @param x
-     *            The x-coordinate of the point to transform to the page layout
-     * @param y
-     *            The y-coordinate of the point to transform to the page layout
+     * @param matrix The Affine Transform to apply to the supplied point
+     * @param x      The x-coordinate of the point to transform to the page
+     *               layout
+     * @param y      The y-coordinate of the point to transform to the page
+     *               layout
      * @return The transformed point, or the original point if the
      *         {@link AffineTransform} is {@code null}
-     *
      * @since 1.0
      */
     public static Point2D getEpsTransformedPoint( final AffineTransform matrix,
@@ -119,24 +116,24 @@ public final class EpsGraphicsUtilities {
      * {@link BasicStroke} class isn't possible to support, so must be converted
      * to a "thin" outline-fill using the EPS "fill" operator vs. "stroke".
      *
-     * @param drawModeCandidate
-     *            The {@link DrawMode} candidate (fill, stroke, fill) to
-     *            evaluate alongside the stroke to determine the EPS draw mode
-     * @param stroke
-     *            The {@link Stroke} to evaluate for whether to force the Draw
-     *            Mode to "fill" (such as when it is not a {@link BasicStroke}
+     * @param drawModeCandidate The {@link DrawMode} candidate (fill, stroke,
+     *                          fill) to evaluate alongside the stroke to
+     *                          determine the EPS draw mode
+     * @param stroke            The {@link Stroke} to evaluate for whether to
+     *                          force the Draw Mode to "fill" (such as when it
+     *                          is not a {@link BasicStroke}
      * @return The potentially adjusted draw mode as represented in EPS operator
      *         form as a lower-case string
      */
-    public static String getEpsDrawMode( final DrawMode drawModeCandidate, final Stroke stroke ) {
+    public static String getEpsDrawMode( final DrawMode drawModeCandidate,
+                                         final Stroke stroke ) {
         // Switch to Fill Mode if the stroke is a custom class that isn't
         // derived from the BasicStroke class, unless we are in Clip Mode.
         final String epsDrawMode = DrawMode.STROKE.equals( drawModeCandidate )
-                && !( stroke instanceof BasicStroke )
-                    ? DrawMode.FILL.toCanonicalString()
-                    : drawModeCandidate.toCanonicalString();
+                                   && !( stroke instanceof BasicStroke )
+                                   ? DrawMode.FILL.toCanonicalString()
+                                   : drawModeCandidate.toCanonicalString();
 
         return epsDrawMode;
     }
-
 }

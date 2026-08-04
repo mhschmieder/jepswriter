@@ -34,43 +34,44 @@ package com.mhschmieder.jepswriter;
  * {@code EpsVersionInfo} is a container class for EpsToolkit Library naming and
  * versioning.
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public final class EpsVersionInfo {
-
-    /**
-     * The default constructor is disabled, as this is a static constants class.
-     */
-    private EpsVersionInfo() {}
 
     /**
      * Static declaration of the official name of this library, to avoid
      * programmer error leading to confusion in clients that might use more than
      * one EPS writer library.
      */
-    @SuppressWarnings("nls") public static final String LIBRARY_NAME                = "EpsToolkit";
-
+    @SuppressWarnings( "nls" )
+    public static final String LIBRARY_NAME = "EpsToolkit";
     /**
      * Static declaration of the current version of this library, for use mostly
      * in the DSC-compliant header of the EPS output file.
      */
-    @SuppressWarnings("nls") public static final String LIBRARY_VERSION             = "1.0";
-
+    @SuppressWarnings( "nls" )
+    public static final String LIBRARY_VERSION = "1.0";
     /**
      * Static declaration of the fully qualified name of this library with its
      * release version as part of the identifier.
      */
-    @SuppressWarnings("nls") public static final String LIBRARY_RELEASE_NAME        = LIBRARY_NAME
-            + " Version " + LIBRARY_VERSION;
-
+    @SuppressWarnings( "nls" )
+    public static final String LIBRARY_RELEASE_NAME = LIBRARY_NAME + " Version "
+                                                      + LIBRARY_VERSION;
     /**
      * Static declaration of the current web host for this open source library.
      * This repository location is included as part of the Document Creator
      * Comment in the DSC-compliant header for the EPS output file.
      */
-    @SuppressWarnings("nls") public static final String LIBRARY_REPOSITORY_LOCATION =
-                                                                                    "https://github.com/mhschmieder/epstoolkit";
+    @SuppressWarnings( "nls" )
+    public static final String LIBRARY_REPOSITORY_LOCATION
+            = "https://github.com/mhschmieder/epstoolkit";
 
+    /**
+     * The default constructor is disabled, as this is a static constants
+     * class.
+     */
+    private EpsVersionInfo() {
+    }
 }

@@ -90,7 +90,8 @@ import java.util.Map;
  * The methods of this class all adhere to Adobe's Encapsulated PostScript (EPS)
  * File Format Specification:
  * <p>
- * https://www.adobe.com/content/dam/acom/en/devnet/actionscript/articles/5002.EPSF_Spec.pdf
+ * https://www.adobe.com/content/dam/acom/en/devnet/actionscript/articles
+ * /5002.EPSF_Spec.pdf
  * <p>
  * This class simplifies the EPS generation by redirecting existing screen
  * oriented methods found on the {@link Graphics2D} class in AWT, thus allowing
@@ -102,10 +103,10 @@ import java.util.Map;
  * responsibility to properly map the {@link Graphics2D} methods to appropriate
  * Encapsulated postScript operators that follow the proper EPS syntax rules.
  * <p>
- * Fortunately, there is a very close match between the EPS spec and Java2D
- * (the 2D Graphics subsystem with Java's AWT toolkit). There are in fact a few
- * methods defined on {@link Graphics2D} that are not relevant to EPS due to
- * the lack of support for transparency, alpha compositing, and rendering hints.
+ * Fortunately, there is a very close match between the EPS spec and Java2D (the
+ * 2D Graphics subsystem with Java's AWT toolkit). There are in fact a few
+ * methods defined on {@link Graphics2D} that are not relevant to EPS due to the
+ * lack of support for transparency, alpha compositing, and rendering hints.
  * Those are implemented to do nothing, and to not punish the invoker at all.
  * <p>
  * There are a few existing Java libraries that directly write EPS from scratch,
@@ -128,9 +129,9 @@ import java.util.Map;
  * <p>
  * Vectorized Text Mode is the default, as substitute font mapping is generally
  * problematic and can lead to files not loading in some applications, along
- * with the usual problems with rotated text; especially common as y-axis
- * labels in charting software but not that uncommon in other contexts either.
- * The selection of Vectorized Text Mode is done via custom Rendering Hints.
+ * with the usual problems with rotated text; especially common as y-axis labels
+ * in charting software but not that uncommon in other contexts either. The
+ * selection of Vectorized Text Mode is done via custom Rendering Hints.
  * <p>
  * The following AWT functions for {@link Graphics} and {@link Graphics2D} are
  * not supported, as they have no application in the EPS context, but all of the
@@ -148,9 +149,8 @@ import java.util.Map;
  * <p>
  * {@link #setXORMode}
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public final class EpsGraphics2D extends Graphics2D {
 
@@ -159,35 +159,43 @@ public final class EpsGraphics2D extends Graphics2D {
      * before drawing, filling, etc., is white, as EPS is usually targeted for
      * black-on-white reports, documents, and other print-designated output.
      */
-    public static final Color     DEFAULT_BACKGROUND_COLOR = Color.WHITE;
+    public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
 
     /**
      * The default foreground color for drawing, filling, etc., is black, as EPS
      * is usually targeted for black-on-white reports, documents, and other
      * print-designated output.
      */
-    public static final Color     DEFAULT_FOREGROUND_COLOR = Color.BLACK;
+    public static final Color DEFAULT_FOREGROUND_COLOR = Color.BLACK;
 
     /**
      * The default {@link ColorMode} is set to RGB as that is the most common
      * mode that covers all downstream clients and contexts (screen display,
      * printing, etc.) when the client doesn't specify a mode explicitly.
      */
-    public static final ColorMode DEFAULT_COLOR_MODE       = ColorMode.RGB;
-
+    public static final ColorMode DEFAULT_COLOR_MODE = ColorMode.RGB;
+    /**
+     * The Rendering Hints for this Graphics Context; mostly for text handling.
+     */
+    private final RenderingHints renderingHints;
+    /**
+     * The {@link EpsDocument} used for actually writing to the EPS Document.
+     * <p>
+     * Note that the {@link EpsDocument} is never used directly by the client;
+     * it is always indirectly used via this {@link EpsGraphics2D} instance.
+     */
+    private final EpsDocument epsDocument;
     /**
      * The background color for pre-clearing regions of the EPS Page.
      */
-    private Color                 backgroundColor;
-
+    private Color backgroundColor;
     /**
      * The foreground color for painting and drawing on the EPS Page.
      * <p>
      * This color should always be in sync with the paint color; it is part of
      * the older {@link Graphics} class so does not allow for gradients.
      */
-    private Color                 foregroundColor;
-
+    private Color foregroundColor;
     /**
      * The current color for overwriting existing content on the EPS Page.
      * <p>
@@ -195,70 +203,48 @@ public final class EpsGraphics2D extends Graphics2D {
      * of {@link Graphics2D} but not {@link Graphics}, and allows for gradients
      * (though the Encapsulated PostScript specification does not).
      */
-    private Paint                 paint;
-
+    private Paint paint;
     /**
      * The current {@link Composite} for alpha transparency; not used by EPS.
      */
-    private Composite             composite;
-
+    private Composite composite;
     /**
      * The current {@link Stroke} for drawing on the EPS Page.
      */
-    private Stroke                stroke;
-
+    private Stroke stroke;
     /**
      * The current font for writing text to the EPS Page.
      */
-    private Font                  font;
-
-    /**
-     * The Rendering Hints for this Graphics Context; mostly for text handling.
-     */
-    private final RenderingHints  renderingHints;
-
+    private Font font;
     /**
      * Flag for whether a clipping rectangle is set or not. {@code true} if set.
      * If set, there is a Graphics State wrapping an active Clip Area.
      */
-    private boolean               clipActive;
-
+    private boolean clipActive;
     /**
      * If set, this Clip Area is intersected with shapes that are about to be
      * drawn to the EPS Page, to make sure they fit within the defined borders.
      */
-    private Area                  clipArea;
-
+    private Area clipArea;
     /**
      * This Transform is applied to the Clip Area to help determine its bounds.
      */
-    private AffineTransform       clipTransform;
-
+    private AffineTransform clipTransform;
     /**
-     * This is the Transform that is applied to the overall EPS Page
-     * positioning for each output operation.
+     * This is the Transform that is applied to the overall EPS Page positioning
+     * for each output operation.
      */
-    private AffineTransform       epsTransform;
-
+    private AffineTransform epsTransform;
     /**
      * The current Color Mode for painting and drawing to the EPS Page.
      */
-    private ColorMode             epsColorMode;
-
-    /**
-     * The {@link EpsDocument} used for actually writing to the EPS Document.
-     * <p>
-     * Note that the {@link EpsDocument} is never used directly by the client;
-     * it is always indirectly used via this {@link EpsGraphics2D} instance.
-     */
-    private final EpsDocument     epsDocument;
-
+    private ColorMode epsColorMode;
     /**
      * A {@link Line2D} instance that is lazily instantiated in drawLine(), and
      * then subsequently reused in order to avoid excessive object creation on
      * the stack and frequent triggers of the garbage collector.
      */
-    private Line2D                line;
+    private Line2D line;
 
     /**
      * A {@link Rectangle2D} instance that is lazily instantiated in drawRect()
@@ -266,7 +252,7 @@ public final class EpsGraphics2D extends Graphics2D {
      * object creation on the stack and frequent triggers of the garbage
      * collector.
      */
-    private Rectangle2D           rect;
+    private Rectangle2D rect;
 
     /**
      * A {@link RoundRectangle2D} instance that is lazily instantiated in
@@ -274,7 +260,7 @@ public final class EpsGraphics2D extends Graphics2D {
      * order to avoid excessive object creation on the stack and frequent
      * triggers of the garbage collector.
      */
-    private RoundRectangle2D      roundRect;
+    private RoundRectangle2D roundRect;
 
     /**
      * An {@link Ellipse2D} instance that is lazily instantiated in drawOval()
@@ -282,7 +268,7 @@ public final class EpsGraphics2D extends Graphics2D {
      * object creation on the stack and frequent triggers of the garbage
      * collector.
      */
-    private Ellipse2D             oval;
+    private Ellipse2D oval;
 
     /**
      * An {@link Arc2D} instance that is lazily instantiated in drawArc() and
@@ -290,7 +276,7 @@ public final class EpsGraphics2D extends Graphics2D {
      * object creation on the stack and frequent triggers of the garbage
      * collector.
      */
-    private Arc2D                 arc;
+    private Arc2D arc;
 
     //////////////////////////// Constructors ////////////////////////////////
 
@@ -311,9 +297,8 @@ public final class EpsGraphics2D extends Graphics2D {
      * of their own; normally an {@link EpsGraphics2D} instance is requested by
      * invoking the {@link EpsDocument#getGraphics2D()} method.
      *
-     * @param documentOwner
-     *            The {@link EpsDocument} that owns this Graphics Context
-     *
+     * @param documentOwner The {@link EpsDocument} that owns this Graphics
+     *                      Context
      * @since 1.0
      */
     public EpsGraphics2D( final EpsDocument documentOwner ) {
@@ -351,35 +336,32 @@ public final class EpsGraphics2D extends Graphics2D {
      * of their own; normally an {@link EpsGraphics2D} instance is requested by
      * invoking the {@link EpsDocument#getGraphics2D()} method.
      *
-     * @param documentOwner
-     *            The {@link EpsDocument} that owns this Graphics Context
-     * @param initialRenderingHints
-     *            The initial {@link RenderingHints} to use for text
-     * @param initialColorMode
-     *            The initial {@link ColorMode} for Color Space context
-     * @param initialBackground
-     *            The initial {@link Color} for {@code clearRect()} calls
-     * @param initialForeground
-     *            The initial {@link Color} for drawing shapes
-     * @param clipIsActive
-     *            {@code true} if a clipping area is initially active
-     * @param initialClipArea
-     *            The initial {@link Area} to use for clipping. if active
-     * @param initialClipTransform
-     *            The initial {@link AffineTransform} to apply to clipping, if
-     *            active
-     * @param initialPageTransform
-     *            The initial {@link AffineTransform} to apply to the
-     *            screen-to-page mapping
-     * @param initialPaint
-     *            The initial {@link Paint} to use for most graphics operations
-     * @param initialComposite
-     *            The initial value of the {@link Composite}; not used here
-     * @param initialFont
-     *            The initial {@link Font} to use for text rendering
-     * @param initialStroke
-     *            The initial {@link Stroke} to use for stroke operations
-     *
+     * @param documentOwner         The {@link EpsDocument} that owns this
+     *                              Graphics Context
+     * @param initialRenderingHints The initial {@link RenderingHints} to use
+     *                              for text
+     * @param initialColorMode      The initial {@link ColorMode} for Color
+     *                              Space context
+     * @param initialBackground     The initial {@link Color} for
+     *                              {@code clearRect()} calls
+     * @param initialForeground     The initial {@link Color} for drawing
+     *                              shapes
+     * @param clipIsActive          {@code true} if a clipping area is initially
+     *                              active
+     * @param initialClipArea       The initial {@link Area} to use for
+     *                              clipping. if active
+     * @param initialClipTransform  The initial {@link AffineTransform} to apply
+     *                              to clipping, if active
+     * @param initialPageTransform  The initial {@link AffineTransform} to apply
+     *                              to the screen-to-page mapping
+     * @param initialPaint          The initial {@link Paint} to use for most
+     *                              graphics operations
+     * @param initialComposite      The initial value of the {@link Composite};
+     *                              not used here
+     * @param initialFont           The initial {@link Font} to use for text
+     *                              rendering
+     * @param initialStroke         The initial {@link Stroke} to use for stroke
+     *                              operations
      * @since 1.0
      */
     protected EpsGraphics2D( final EpsDocument documentOwner,
@@ -427,10 +409,8 @@ public final class EpsGraphics2D extends Graphics2D {
      * supplied {@link EpsGraphics2D} Graphics Context and points to the same
      * {@link EpsDocument} instance.
      *
-     * @param epsGraphics
-     *            The {@link EpsGraphics2D} Graphics Context used to redirect
-     *            graphics drawing command to the EPS document
-     *
+     * @param epsGraphics The {@link EpsGraphics2D} Graphics Context used to
+     *                    redirect graphics drawing command to the EPS document
      * @since 1.0
      */
     protected EpsGraphics2D( final EpsGraphics2D epsGraphics ) {
@@ -454,664 +434,61 @@ public final class EpsGraphics2D extends Graphics2D {
     ////////////////// Accessor methods for private data /////////////////////
 
     /**
-     * Returns a flag for whether or not a clipping rectangle is active
-     * ({@code true} if so; {@code false} if not).
-     *
-     * @return {@code true} if a clipping rectangle is active; {@code false}
-     *         otherwise
-     *
-     * @since 1.0
-     *
-     * @see #setClipActive(boolean)
-     */
-    public boolean isClipActive() {
-        return clipActive;
-    }
-
-    /**
-     * Sets a flag for whether or not a clipping rectangle is active
-     * ({@code true} if so; {@code false} if not).
-     *
-     * @param clippingRectangleActive
-     *            Set to {@code true} if a clipping rectangle is active;
-     *            {@code false} otherwise
-     *
-     * @since 1.0
-     *
-     * @see #isClipActive()
-     */
-    public void setClipActive( final boolean clippingRectangleActive ) {
-        clipActive = clippingRectangleActive;
-    }
-
-    /**
-     * Returns the Color Mode used for all drawing operations.
-     *
-     * @return The {@link ColorMode} to use for the EPS Document
-     *
-     * @since 1.0
-     *
-     * @see #setColorMode(ColorMode)
-     */
-    public ColorMode getColorMode() {
-        return epsColorMode;
-    }
-
-    /**
-     * Sets the EPS Color Mode to use when drawing on the document.
-     *
-     * @param colorMode
-     *            The {@link ColorMode} to use for the EPS Document
-     *
-     * @since 1.0
-     *
-     * @see #getColorMode()
-     */
-    public void setColorMode( final ColorMode colorMode ) {
-        epsColorMode = colorMode;
-    }
-
-    /////////////// Efficient floating-point polyline methods ////////////////
-
-    /**
      * Draws a polyline using single-precision coordinates.
      * <p>
-     * This method makes up for a deficiency in the available methods for
-     * the AWT {@link Graphics} class, as the downstream path-handling code is
+     * This method makes up for a deficiency in the available methods for the
+     * AWT {@link Graphics} class, as the downstream path-handling code is
      * perfectly capable of using single-precision floating-point coordinates.
      * Of course, being a unique method that isn't overridden from
-     * {@link Graphics2D} or {@link Graphics} means that this method can only
-     * be invoked directly by clients vs. indirectly in rendering code where the
+     * {@link Graphics2D} or {@link Graphics} means that this method can only be
+     * invoked directly by clients vs. indirectly in rendering code where the
      * client might not have full control. Nevertheless, some client code will
      * go for massive lists of single-precision polylines for efficiency.
      *
-     * @param xPoints
-     *            A single-precision array of x coordinates for the polyline
-     * @param yPoints
-     *            A single-precision array of x coordinates for the polyline
-     * @param numberOfPoints
-     *            The number of single-precision points to make for this
-     *            polyline
-     *
+     * @param xPoints        A single-precision array of x coordinates for the
+     *                       polyline
+     * @param yPoints        A single-precision array of x coordinates for the
+     *                       polyline
+     * @param numberOfPoints The number of single-precision points to make for
+     *                       this polyline
      * @since 1.0
      */
     public void drawPolyline( final float[] xPoints,
                               final float[] yPoints,
                               final int numberOfPoints ) {
-        final GeneralPath path = ShapeUtilities.makePolyline( xPoints, yPoints, numberOfPoints );
+        final GeneralPath path = ShapeUtilities.makePolyline( xPoints,
+                                                              yPoints,
+                                                              numberOfPoints );
         draw( path );
     }
 
     /**
      * Draws a polyline using double-precision coordinates.
      * <p>
-     * This method makes up for a deficiency in the available methods for
-     * the AWT {@link Graphics} class, as the downstream path-handling code is
+     * This method makes up for a deficiency in the available methods for the
+     * AWT {@link Graphics} class, as the downstream path-handling code is
      * perfectly capable of using double-precision floating-point coordinates.
      * Of course, being a unique method that isn't overridden from
-     * {@link Graphics2D} or {@link Graphics} means that this method can only
-     * be invoked directly by clients vs. indirectly in rendering code where the
+     * {@link Graphics2D} or {@link Graphics} means that this method can only be
+     * invoked directly by clients vs. indirectly in rendering code where the
      * client might not have full control. Nevertheless, some client code will
      * go for massive lists of double-precision polylines for efficiency.
      *
-     * @param xPoints
-     *            A double-precision array of x coordinates for the polyline
-     * @param yPoints
-     *            A double-precision array of x coordinates for the polyline
-     * @param numberOfPoints
-     *            The number of double-precision points to make for this
-     *            polyline
-     *
+     * @param xPoints        A double-precision array of x coordinates for the
+     *                       polyline
+     * @param yPoints        A double-precision array of x coordinates for the
+     *                       polyline
+     * @param numberOfPoints The number of double-precision points to make for
+     *                       this polyline
      * @since 1.0
      */
     public void drawPolyline( final double[] xPoints,
                               final double[] yPoints,
                               final int numberOfPoints ) {
-        final GeneralPath path = ShapeUtilities.makePolyline( xPoints, yPoints, numberOfPoints );
+        final GeneralPath path = ShapeUtilities.makePolyline( xPoints,
+                                                              yPoints,
+                                                              numberOfPoints );
         draw( path );
-    }
-
-    //////////// Efficient setter methods for geometry primitives ////////////
-
-    /**
-     * Sets the attributes of the reusable {@link Line2D} object that is used by
-     * the {@link #drawLine(int, int, int, int)} method.
-     *
-     * @param x1
-     *            The X coordinate of the start point.
-     * @param y1
-     *            The Y coordinate of the start point.
-     * @param x2
-     *            The X coordinate of the end point.
-     * @param y2
-     *            The Y coordinate of the end point.
-     *
-     * @since 1.0
-     */
-    private void setLine( final double x1, final double y1, final double x2, final double y2 ) {
-        if ( line == null ) {
-            line = new Line2D.Double( x1, y1, x2, y2 );
-        }
-        else {
-            line.setLine( x1, y1, x2, y2 );
-        }
-    }
-
-    /**
-     * Sets the attributes of the reusable {@link Rectangle2D} object that is
-     * used by the {@link #drawRect(int, int, int, int)} and
-     * {@link #fillRect(int, int, int, int)} methods.
-     *
-     * @param x
-     *            The X coordinate of the upper-left corner of the newly
-     *            constructed {@link Rectangle2D}
-     * @param y
-     *            The Y coordinate of the upper-left corner of the newly
-     *            constructed {@link Rectangle2D}
-     * @param width
-     *            The width of the newly constructed {@link Rectangle2D}
-     * @param height
-     *            The height of the newly constructed {@link Rectangle2D}
-     *
-     * @since 1.0
-     */
-    private void setRect( final int x, final int y, final int width, final int height ) {
-        if ( rect == null ) {
-            rect = new Rectangle2D.Double( x, y, width, height );
-        }
-        else {
-            rect.setRect( x, y, width, height );
-        }
-    }
-
-    /**
-     * Sets the attributes of the reusable {@link RoundRectangle2D} object that
-     * is used by the {@link #drawRoundRect(int, int, int, int, int, int)} and
-     * {@link #fillRoundRect(int, int, int, int, int, int)} methods.
-     *
-     * @param x
-     *            The X coordinate of the newly constructed
-     *            {@link RoundRectangle2D}
-     * @param y
-     *            The Y coordinate of the newly constructed
-     *            {@link RoundRectangle2D}
-     * @param width
-     *            The width to which to set the newly constructed
-     *            {@link RoundRectangle2D}
-     * @param height
-     *            The height to which to set the newly constructed
-     *            {@link RoundRectangle2D}
-     * @param arcWidth
-     *            The width of the arc to use to round off the corners of the
-     *            newly constructed {@link RoundRectangle2D}
-     * @param arcHeight
-     *            The height of the arc to use to round off the corners of the
-     *            newly constructed {@link RoundRectangle2D}
-     *
-     * @since 1.0
-     */
-    private void setRoundRect( final int x,
-                               final int y,
-                               final int width,
-                               final int height,
-                               final int arcWidth,
-                               final int arcHeight ) {
-        if ( roundRect == null ) {
-            roundRect = new RoundRectangle2D.Double( x, y, width, height, arcWidth, arcHeight );
-        }
-        else {
-            roundRect.setRoundRect( x, y, width, height, arcWidth, arcHeight );
-        }
-    }
-
-    /**
-     * Sets the attributes of the reusable {@link Arc2D} object that is used by
-     * {@link #drawArc(int, int, int, int, int, int)} and
-     * {@link #fillArc(int, int, int, int, int, int)} methods.
-     *
-     * @param x
-     *            The X coordinate of the upper-left corner of the arc's framing
-     *            rectangle
-     * @param y
-     *            The Y coordinate of the upper-left corner of the arc' framing
-     *            rectangle
-     * @param width
-     *            The overall width of the full ellipse of which this arc is a
-     *            partial section
-     * @param height
-     *            The overall height of the full ellipse of which this arc is a
-     *            partial section
-     * @param startAngle
-     *            The starting angle of the arc in degrees (0 = 3 o'clock)
-     * @param arcAngle
-     *            The angular extent of the arc in degrees (anti-clockwise)
-     * @param closureType
-     *            The closure type for the arc: OPEN, CHORD, or PIE
-     *
-     * @since 1.0
-     */
-    private void setArc( final int x,
-                         final int y,
-                         final int width,
-                         final int height,
-                         final int startAngle,
-                         final int arcAngle,
-                         final int closureType ) {
-        if ( arc == null ) {
-            arc = new Arc2D.Double( x, y, width, height, startAngle, arcAngle, closureType );
-        }
-        else {
-            arc.setArc( x, y, width, height, startAngle, arcAngle, closureType );
-        }
-    }
-
-    /**
-     * Sets the attributes of the reusable {@link Ellipse2D} object that is
-     * used by the {@link #drawOval(int, int, int, int)} and
-     * {@link #fillOval(int, int, int, int)} methods.
-     *
-     * @param x
-     *            The X coordinate of the upper-left corner of the framing
-     *            rectangle
-     * @param y
-     *            the Y coordinate of the upper-left corner of the framing
-     *            rectangle
-     * @param width
-     *            The width of the framing rectangle
-     * @param height
-     *            The height of the framing rectangle
-     *
-     * @since 1.0
-     */
-    private void setOval( final int x, final int y, final int width, final int height ) {
-        if ( oval == null ) {
-            oval = new Ellipse2D.Double( x, y, width, height );
-        }
-        else {
-            oval.setFrame( x, y, width, height );
-        }
-    }
-
-    ///////////////////// Graphics2D method overrides ////////////////////////
-
-    /**
-     * Returns the device configuration associated with the local graphics
-     * environment, which is dependent on machine architecture and screen
-     * configurations, unique per user.
-     *
-     * @since 1.0
-     */
-    @Override
-    public GraphicsConfiguration getDeviceConfiguration() {
-        final GraphicsConfiguration graphicsConfiguration = GraphicsUtilities
-                .getDeviceConfiguration();
-        return graphicsConfiguration;
-    }
-
-    /**
-     * Returns the current {@link Paint} attributes of this
-     * {@link EpsGraphics2D} instance.
-     *
-     * @return The {@link Paint} object to be used to generate color during the
-     *         rendering process (never {@code null})
-     *
-     * @since 1.0
-     *
-     * @see #setPaint(java.awt.Paint)
-     */
-    @Override
-    public Paint getPaint() {
-        return paint;
-    }
-
-    /**
-     * Sets the {@link Paint} attribute for the {@link EpsGraphics2D} context.
-     * Calling this method with a {@code null} {@link Paint} object does not
-     * have any effect on the current {@link Paint} attribute of this {@link
-     * EpsGraphics2D}.
-     * <p>
-     * Only {@link Paint} objects of type {@link Color} are respected by
-     * {@link EpsGraphics2D} at this time; gradients are cached but may have no
-     * impact as they could get ignored downstream due to "instanceof" checks
-     * against the {@link Color} class not matching.
-     *
-     * @param newPaint
-     *            The {@link Paint} object to be used to generate color during
-     *            the rendering process, or {@code null}
-     *
-     * @since 1.0
-     *
-     * @see #getPaint()
-     */
-    @Override
-    public void setPaint( final Paint newPaint ) {
-        if ( newPaint == null ) {
-            return;
-        }
-
-        paint = newPaint;
-
-        if ( newPaint instanceof Color ) {
-            setColor( ( Color ) newPaint );
-        }
-        else if ( newPaint instanceof GradientPaint ) {
-            // Not supported by the Encapsulated PostScript specification.
-        }
-        else if ( newPaint instanceof LinearGradientPaint ) {
-            // Not supported by the Encapsulated PostScript specification.
-        }
-        else if ( newPaint instanceof RadialGradientPaint ) {
-            // Not supported by the Encapsulated PostScript specification.
-        }
-    }
-
-    /**
-     * Returns the current foreground color. This will be a default value
-     * (black) until it is changed using the {@link #setColor} method.
-     * <p>
-     * It is not recommended to call this method as it is supplied solely for
-     * backward compatibility with the older {@link Graphics} class; the newer
-     * {@link #getPaint} method should be used instead, as it supports various
-     * gradients that were added to {@link Graphics2D}. The cached foreground
-     * color and paint are guaranteed to stay in sync, so this method is safe.
-     *
-     * @return The current foreground color used for all graphics operations
-     *
-     * @since 1.0
-     *
-     * @see #setColor(java.awt.Color)
-     */
-    @Override
-    public Color getColor() {
-        return foregroundColor;
-    }
-
-    /**
-     * Sets the Color to be used when drawing all future shapes, text, etc.
-     * <p>
-     * It is not recommended to call this method as it is supplied solely for
-     * backward compatibility with the older {@link Graphics} class; the newer
-     * {@link #setPaint} method should be used instead, as it supports various
-     * gradients that were added to {@link Graphics2D}. This method guarantees
-     * that the cached foreground color and paint stay in sync, so is safe.
-     * <p>
-     * There is no need to match or contrast the supplied color with any other
-     * cached color to avoid masking of graphics, as the background color for
-     * {@link Graphics2D} objects is specialized and doesn't interact with the
-     * foreground color, and as the paint color is kept in sync with foreground.
-     * <p>
-     * This function writes the new color to the EPS output even if it is the
-     * same as the current cached color, as the Graphics State might be
-     * different or there might have been a temporary color written previously.
-     *
-     * @param color
-     *            The new foreground color used for all graphics operations
-     *
-     * @since 1.0
-     *
-     * @see #setPaint(java.awt.Paint)
-     */
-    @Override
-    public void setColor( final Color color ) {
-        if ( color == null ) {
-            return;
-        }
-
-        foregroundColor = color;
-        paint = color;
-
-        final ColorMode colorMode = getColorMode();
-        EpsGraphicsOperators.epsSetColor( epsDocument, foregroundColor, colorMode );
-    }
-
-    /**
-     * Returns the background color that is used by the {@link #clearRect}
-     * method.
-     *
-     * @return color
-     *         The {@link Color} to use for pre-filling background regions;
-     *         potentially {@code null}, which is treated as a no-op
-     *
-     * @since 1.0
-     *
-     * @see #setBackground(java.awt.Color)
-     */
-    @Override
-    public Color getBackground() {
-        return backgroundColor;
-    }
-
-    /**
-     * Sets the background color to be used by the {@link #clearRect} method;
-     * {@code null} is permitted in order to be consistent with the reference
-     * implementation's documentation, and is simply treated as a no-op.
-     * <p>
-     * There is no need to match or contrast the supplied color with any other
-     * cached color to avoid masking of graphics, as this is a specialized
-     * background object and isn't the same as that of the parent component.
-     *
-     * @param color
-     *            The {@link Color} to use for pre-filling background regions;
-     *            potentially {@code null}, which is treated as a no-op
-     *
-     * @since 1.0
-     *
-     * @see #getBackground()
-     */
-    @Override
-    public void setBackground( final Color color ) {
-        backgroundColor = color;
-    }
-
-    /**
-     * Returns the current {@link Composite} value for alpha transparency; not
-     * supported by EPS or PostScript.
-     *
-     * @since 1.0
-     *
-     * @see #setComposite(java.awt.Composite)
-     */
-    @Override
-    public Composite getComposite() {
-        return composite;
-    }
-
-    /**
-     * Sets the new {@link Composite} value for alpha transparency; not
-     * supported by EPS or PostScript.
-     *
-     * @since 1.0
-     *
-     * @see #getComposite()
-     */
-    @Override
-    public void setComposite( final Composite comp ) {
-        // Ignore invalid composite values as they aren't used by EPS.
-        if ( comp == null ) {
-            return;
-        }
-
-        composite = comp;
-    }
-
-    /**
-     * Returns the {@link Stroke} currently in use. Guaranteed to be an instance
-     * of {@link BasicStroke}.
-     *
-     * @since 1.0
-     *
-     * @see #setStroke(java.awt.Stroke)
-     */
-    @Override
-    public Stroke getStroke() {
-        return stroke;
-    }
-
-    /**
-     * Sets the current stroke.
-     * <p>
-     * This method now accepts all stroke types, but anything not derived from
-     * {@link BasicStroke} is treated downstream as a fill command, as EPS only
-     * supports the equivalent of the AWT {@link BasicStroke} class.
-     * <p>
-     * It is not advisable to exit early when the incoming {@link Stroke}
-     * matches the current cached {@link Stroke}, as that has been shown to have
-     * edge cases where the stroke was never set in the EPS file, and also it
-     * assumes that no other command or operators temporarily set the stroke.
-     *
-     * @throws IllegalArgumentException
-     *             If the newStroke argument is null
-     *
-     * @since 1.0
-     *
-     * @see #getStroke()
-     */
-    @Override
-    public void setStroke( final Stroke newStroke ) {
-        if ( newStroke == null ) {
-            throw new IllegalArgumentException( "Null 'newStroke' argument." ); //$NON-NLS-1$
-        }
-
-        // Cache the new stroke, as long as it isn't null.
-        stroke = newStroke;
-
-        // If this is not a BasicStroke, meaning it is some third-party custom
-        // Stroke class that is derived from the original Stroke interface vs.
-        // derived from the BasicStroke parent implementation class, we treat it
-        // downstream as a "fill" (if it would otherwise be a "stroke"), as EPS
-        // only supports the equivalent of AWT's BasicStroke class.
-        if ( !( newStroke instanceof BasicStroke ) ) {
-            return;
-        }
-
-        // Write the PostScript basic stroke attributes and dash pattern.
-        final BasicStroke basicStroke = ( BasicStroke ) newStroke;
-        EpsGraphicsOperators.epsSetStroke( epsDocument, basicStroke );
-    }
-
-    /**
-     * Returns the current value for the specified Rendering Hint.
-     * <p>
-     * See the {@link EpsRenderingHints} class for details on supported hints.
-     *
-     * @param hintKey
-     *            The Rendering Hint key
-     * @return The current value for the specified Rendering Hint (or
-     *         {@code null} if not found)
-     *
-     * @since 1.0
-     *
-     * @see #setRenderingHint(java.awt.RenderingHints.Key, java.lang.Object)
-     */
-    @Override
-    public Object getRenderingHint( final RenderingHints.Key hintKey ) {
-        return renderingHints.get( hintKey );
-    }
-
-    /**
-     * Sets the value for the specified Rendering Hint.
-     *
-     * @param hintKey
-     *            The Rendering Hint key
-     * @param hintValue
-     *            The Rendering Hint value
-     *
-     * @since 1.0
-     *
-     * @see #getRenderingHint(java.awt.RenderingHints.Key)
-     */
-    @Override
-    public void setRenderingHint( final RenderingHints.Key hintKey, final Object hintValue ) {
-        renderingHints.put( hintKey, hintValue );
-    }
-
-    /**
-     * Returns a copy of the Rendering Hints. Modifying the returned copy has no
-     * impact on the state of this {@link EpsGraphics2D} instance.
-     *
-     * @return The Rendering Hints (never {@code null}).
-     *
-     * @since 1.0
-     *
-     * @see #setRenderingHints(java.util.Map)
-     */
-    @Override
-    public RenderingHints getRenderingHints() {
-        final RenderingHints renderingHintsCopy = ( RenderingHints ) renderingHints.clone();
-        return renderingHintsCopy;
-    }
-
-    /**
-     * Sets (replaces) the Rendering Hints to the specified collection.
-     *
-     * @param hints
-     *            The new Rendering Hints ({@code null} not permitted)
-     *
-     * @since 1.0
-     *
-     * @see #getRenderingHints()
-     */
-    @Override
-    public void setRenderingHints( final Map< ?, ? > hints ) {
-        renderingHints.clear();
-        addRenderingHints( hints );
-    }
-
-    /**
-     * Adds all of the supplied Rendering Hints to the existing collection.
-     *
-     * @param hints
-     *            The Rendering Hints to add ({@code null} not permitted).
-     *
-     * @since 1.0
-     */
-    @Override
-    public void addRenderingHints( final Map< ?, ? > hints ) {
-        renderingHints.putAll( hints );
-    }
-
-    /**
-     * Returns the default {@link FontRenderContext} used for measuring text for
-     * Vectorized Text Mode.
-     *
-     * @since 1.0
-     */
-    @Override
-    public FontRenderContext getFontRenderContext() {
-        return FontUtilities.getFontRenderContextForVectorization();
-    }
-
-    /**
-     * Draws a Shape on the EPS Document.
-     *
-     * @since 1.0
-     *
-     * @see #fill(java.awt.Shape)
-     */
-    @Override
-    public void draw( final Shape shape ) {
-        EpsGraphicsOperators
-                .epsDrawShape( epsDocument,
-                               shape,
-                               epsTransform,
-                               EpsGraphicsUtilities.getEpsDrawMode( DrawMode.STROKE, stroke ) );
-    }
-
-    /**
-     * Fills a Shape on the EPS document.
-     *
-     * @since 1.0
-     *
-     * @see #draw(java.awt.Shape)
-     */
-    @Override
-    public void fill( final Shape shape ) {
-        EpsGraphicsOperators
-                .epsDrawShape( epsDocument,
-                               shape,
-                               epsTransform,
-                               EpsGraphicsUtilities.getEpsDrawMode(
-                                       DrawMode.FILL, stroke ) );
     }
 
     /**
@@ -1146,14 +523,18 @@ public final class EpsGraphics2D extends Graphics2D {
         final Color darker = oldColor.darker().darker();
 
         // Paint the "raised" or "recessed" left and top sides.
-        setColor( raised ? brighter : darker );
+        setColor( raised
+                  ? brighter
+                  : darker );
         fillRect( x, y, 1, height + 1 );
         fillRect( x + 1, y, width - 1, 1 );
 
         // Conversely, paint the "recessed" or "raised" bottom and right sides
         // to complement the choices for the left and top sides and therefore
         // give the illusion of 3D.
-        setColor( raised ? darker : brighter );
+        setColor( raised
+                  ? darker
+                  : brighter );
         fillRect( x + 1, y + height, width, 1 );
         fillRect( x + width, y, 1, height );
 
@@ -1202,19 +583,41 @@ public final class EpsGraphics2D extends Graphics2D {
         fillRect( x + 1, y + 1, width - 2, height - 2 );
 
         // Paint the "raised" or "recessed" left and top sides.
-        setColor( raised ? brighter : darker );
+        setColor( raised
+                  ? brighter
+                  : darker );
         fillRect( x, y, 1, height );
         fillRect( x + 1, y, width - 2, 1 );
 
         // Conversely, paint the "recessed" or "raised" bottom and right sides
         // to complement the choices for the left and top sides and therefore
         // give the illusion of 3D.
-        setColor( raised ? darker : brighter );
+        setColor( raised
+                  ? darker
+                  : brighter );
         fillRect( x + 1, ( y + height ) - 1, width - 1, 1 );
         fillRect( ( x + width ) - 1, y, 1, height - 1 );
 
         setPaint( oldPaint );
         setColor( oldColor );
+    }
+
+    /////////////// Efficient floating-point polyline methods ////////////////
+
+    /**
+     * Draws a Shape on the EPS Document.
+     *
+     * @see #fill(java.awt.Shape)
+     * @since 1.0
+     */
+    @Override
+    public void draw( final Shape shape ) {
+        EpsGraphicsOperators.epsDrawShape( epsDocument,
+                                           shape,
+                                           epsTransform,
+                                           EpsGraphicsUtilities.getEpsDrawMode(
+                                                   DrawMode.STROKE,
+                                                   stroke ) );
     }
 
     /**
@@ -1241,6 +644,8 @@ public final class EpsGraphics2D extends Graphics2D {
         return status;
     }
 
+    //////////// Efficient setter methods for geometry primitives ////////////
+
     /**
      * Draws a BufferedImage on the EPS document.
      *
@@ -1256,10 +661,13 @@ public final class EpsGraphics2D extends Graphics2D {
         }
 
         // Allow calling "drawImage" with null "op", like the JDK does.
-        final BufferedImage imageToDraw = ( op != null ) ? op.filter( img, null ) : img;
+        final BufferedImage imageToDraw = ( op != null )
+                                          ? op.filter( img, null )
+                                          : img;
 
-        final AffineTransform translation = AffineTransform.getTranslateInstance( translateX,
-                                                                                  translateY );
+        final AffineTransform translation
+                = AffineTransform.getTranslateInstance( translateX,
+                                                        translateY );
         drawImage( imageToDraw, translation, null );
     }
 
@@ -1271,8 +679,9 @@ public final class EpsGraphics2D extends Graphics2D {
     @Override
     public void drawRenderedImage( final RenderedImage renderedImage,
                                    final AffineTransform xform ) {
-        final BufferedImage bufferedImage = ImageConversionUtilities
-                .convertRenderedImage( renderedImage );
+        final BufferedImage bufferedImage
+                =
+                ImageConversionUtilities.convertRenderedImage( renderedImage );
         drawImage( bufferedImage, xform, null );
     }
 
@@ -1282,7 +691,8 @@ public final class EpsGraphics2D extends Graphics2D {
      * @since 1.0
      */
     @Override
-    public void drawRenderableImage( final RenderableImage img, final AffineTransform xform ) {
+    public void drawRenderableImage( final RenderableImage img,
+                                     final AffineTransform xform ) {
         if ( img == null ) {
             return;
         }
@@ -1294,27 +704,29 @@ public final class EpsGraphics2D extends Graphics2D {
     /**
      * Draws a string at (x,y).
      *
-     * @since 1.0
-     *
      * @see #drawString(java.lang.String, float, float)
+     * @since 1.0
      */
     @Override
-    public void drawString( final String str, final int x, final int y ) {
+    public void drawString( final String str,
+                            final int x,
+                            final int y ) {
         drawString( str, ( float ) x, ( float ) y );
     }
 
     /**
      * Draws a string at (x,y).
      *
-     * @throws NullPointerException
-     *             If the string argument is null
-     *
+     * @throws NullPointerException If the string argument is null
      * @since 1.0
      */
     @Override
-    public void drawString( final String string, final float x, final float y ) {
+    public void drawString( final String string,
+                            final float x,
+                            final float y ) {
         if ( string == null ) {
-            throw new NullPointerException( "Null 'string' argument." ); //$NON-NLS-1$
+            throw new NullPointerException( "Null 'string' argument." );
+            //$NON-NLS-1$
         }
 
         if ( string.isEmpty() ) {
@@ -1322,25 +734,35 @@ public final class EpsGraphics2D extends Graphics2D {
         }
 
         final Font currentFont = getFont();
-        final AttributedCharacterIterator attributedCharacterIterator = FontUtilities
-                .getAttributeCharacterIterator( string, currentFont );
+        final AttributedCharacterIterator attributedCharacterIterator
+                = FontUtilities.getAttributeCharacterIterator( string,
+                                                               currentFont );
 
-        final Object textRenderingMode =
-                                       getRenderingHint( EpsRenderingHints.KEY_TEXT_RENDERING_MODE );
-        if ( EpsRenderingHints.VALUE_TEXT_RENDERING_MODE_VECTOR.equals( textRenderingMode ) ) {
+        final Object textRenderingMode
+                = getRenderingHint( EpsRenderingHints.KEY_TEXT_RENDERING_MODE );
+        if ( EpsRenderingHints.VALUE_TEXT_RENDERING_MODE_VECTOR.equals(
+                textRenderingMode ) ) {
             drawString( attributedCharacterIterator, x, y );
         }
-        else if ( EpsRenderingHints.VALUE_TEXT_RENDERING_MODE_TEXT.equals( textRenderingMode ) ) {
+        else if ( EpsRenderingHints.VALUE_TEXT_RENDERING_MODE_TEXT.equals(
+                textRenderingMode ) ) {
             // Transform the point from screen coordinates to paper coordinates.
-            final Point2D location = EpsGraphicsUtilities
-                    .getEpsTransformedPoint( epsTransform, x, y );
+            final Point2D location
+                    = EpsGraphicsUtilities.getEpsTransformedPoint( epsTransform,
+                                                                   x,
+                                                                   y );
             final float x1 = ( float ) location.getX();
             final float y1 = ( float ) location.getY();
 
             // Draw the attributed character string to the EPS Document.
-            EpsGraphicsOperators.epsDrawText( epsDocument, attributedCharacterIterator, x1, y1 );
+            EpsGraphicsOperators.epsDrawText( epsDocument,
+                                              attributedCharacterIterator,
+                                              x1,
+                                              y1 );
         }
     }
+
+    ///////////////////// Graphics2D method overrides ////////////////////////
 
     /**
      * Draws the characters of an {@link AttributedCharacterIterator}, starting
@@ -1349,7 +771,9 @@ public final class EpsGraphics2D extends Graphics2D {
      * @since 1.0
      */
     @Override
-    public void drawString( final AttributedCharacterIterator iterator, final int x, final int y ) {
+    public void drawString( final AttributedCharacterIterator iterator,
+                            final int x,
+                            final int y ) {
         drawString( iterator, ( float ) x, ( float ) y );
     }
 
@@ -1364,9 +788,24 @@ public final class EpsGraphics2D extends Graphics2D {
                             final float x,
                             final float y ) {
         final FontRenderContext fontRenderContext = getFontRenderContext();
-        final Shape shape = AttributedTextUtilities
-                .getRenderedText( attributedCharacterIterator, fontRenderContext, x, y );
+        final Shape shape = AttributedTextUtilities.getRenderedText(
+                attributedCharacterIterator,
+                fontRenderContext,
+                x,
+                y );
         fill( shape );
+    }    /**
+     * Returns the current {@link Paint} attributes of this
+     * {@link EpsGraphics2D} instance.
+     *
+     * @return The {@link Paint} object to be used to generate color during the
+     *         rendering process (never {@code null})
+     * @see #setPaint(java.awt.Paint)
+     * @since 1.0
+     */
+    @Override
+    public Paint getPaint() {
+        return paint;
     }
 
     /**
@@ -1375,149 +814,63 @@ public final class EpsGraphics2D extends Graphics2D {
      * @since 1.0
      */
     @Override
-    public void drawGlyphVector( final GlyphVector glyphVector, final float x, final float y ) {
+    public void drawGlyphVector( final GlyphVector glyphVector,
+                                 final float x,
+                                 final float y ) {
         final Shape shape = glyphVector.getOutline( x, y );
         fill( shape );
-    }
-
-    /**
-     * Translates the origin of the EpsGraphics2D Graphics Context to the point
-     * (x,y) in the current coordinate system.
+    }    /**
+     * Sets the {@link Paint} attribute for the {@link EpsGraphics2D} context.
+     * Calling this method with a {@code null} {@link Paint} object does not
+     * have any effect on the current {@link Paint} attribute of this
+     * {@link EpsGraphics2D}.
+     * <p>
+     * Only {@link Paint} objects of type {@link Color} are respected by
+     * {@link EpsGraphics2D} at this time; gradients are cached but may have no
+     * impact as they could get ignored downstream due to "instanceof" checks
+     * against the {@link Color} class not matching.
      *
-     * @since 1.0
-     *
-     * @see #translate(double, double)
-     */
-    @Override
-    public void translate( final int translateX, final int translateY ) {
-        translate( ( double ) translateX, ( double ) translateY );
-    }
-
-    /**
-     * Concatenates the current EpsGraphics2D Transform with a translation
-     * transform.
-     *
+     * @param newPaint The {@link Paint} object to be used to generate color
+     *                 during the rendering process, or {@code null}
+     * @see #getPaint()
      * @since 1.0
      */
     @Override
-    public void translate( final double translateX, final double translateY ) {
-        final AffineTransform translation = AffineTransform.getTranslateInstance( translateX,
-                                                                                  translateY );
-        transform( translation );
-    }
-
-    /**
-     * Concatenates the current EpsGraphics2D Transform with a rotation
-     * transform.
-     *
-     * @since 1.0
-     */
-    @Override
-    public void rotate( final double theta ) {
-        rotate( theta, 0.0d, 0.0d );
-    }
-
-    /**
-     * Concatenates the current EpsGraphics2D Transform with a translated
-     * rotation transform.
-     *
-     * @since 1.0
-     */
-    @Override
-    public void rotate( final double theta, final double rotateX, final double rotateY ) {
-        final AffineTransform rotation =
-                                       AffineTransform.getRotateInstance( theta, rotateX, rotateY );
-        transform( rotation );
-    }
-
-    /**
-     * Concatenates the current EpsGraphics2D Transform with a scaling
-     * transformation.
-     *
-     * @since 1.0
-     */
-    @Override
-    public void scale( final double scaleX, final double scaleY ) {
-        final AffineTransform scale = AffineTransform.getScaleInstance( scaleX, scaleY );
-        transform( scale );
-    }
-
-    /**
-     * Concatenates the current EpsGraphics2D Transform with a shearing
-     * transform.
-     *
-     * @since 1.0
-     */
-    @Override
-    public void shear( final double shearX, final double shearY ) {
-        transform( AffineTransform.getShearInstance( shearX, shearY ) );
-    }
-
-    /**
-     * Composes an AffineTransform object with the Transform in this
-     * EpsGraphics2D according to the rule last-specified-first-applied.
-     *
-     * @since 1.0
-     */
-    @Override
-    public void transform( final AffineTransform transform ) {
-        final AffineTransform affine = getTransform();
-        affine.concatenate( transform );
-        setTransform( affine );
-    }
-
-    /**
-     * Returns a copy of the {@link AffineTransform} used by this
-     * {@link EpsGraphics2D} instance.
-     *
-     * @since 1.0
-     *
-     * @see #setTransform(java.awt.geom.AffineTransform)
-     */
-    @Override
-    public AffineTransform getTransform() {
-        return new AffineTransform( epsTransform );
-    }
-
-    /**
-     * Sets the AffineTransform to be used by this EpsGraphics2D, or resets to
-     * the identity transform if {@code null} is passed as the new transform.
-     *
-     * @since 1.0
-     *
-     * @see #getTransform()
-     */
-    @Override
-    public void setTransform( final AffineTransform transform ) {
-        if ( transform == null ) {
-            epsTransform = new AffineTransform();
-        }
-        else {
-            epsTransform = new AffineTransform( transform );
-        }
-    }
-
-    /**
-     * Intersects the current clip with the interior of the specified Shape and
-     * sets the clip to the resulting intersection.
-     *
-     * @since 1.0
-     */
-    @Override
-    public void clip( final Shape shape ) {
-        if ( shape == null ) {
-            setClip( null );
+    public void setPaint( final Paint newPaint ) {
+        if ( newPaint == null ) {
             return;
         }
 
-        if ( clipArea == null ) {
-            setClip( shape );
-            return;
-        }
+        paint = newPaint;
 
-        final Area area = new Area( clipArea );
-        area.intersect( new Area( shape ) );
-        setClip( area );
+        if ( newPaint instanceof Color ) {
+            setColor( ( Color ) newPaint );
+        }
+        else if ( newPaint instanceof GradientPaint ) {
+            // Not supported by the Encapsulated PostScript specification.
+        }
+        else if ( newPaint instanceof LinearGradientPaint ) {
+            // Not supported by the Encapsulated PostScript specification.
+        }
+        else if ( newPaint instanceof RadialGradientPaint ) {
+            // Not supported by the Encapsulated PostScript specification.
+        }
+    }
+
+    /**
+     * Fills a Shape on the EPS document.
+     *
+     * @see #draw(java.awt.Shape)
+     * @since 1.0
+     */
+    @Override
+    public void fill( final Shape shape ) {
+        EpsGraphicsOperators.epsDrawShape( epsDocument,
+                                           shape,
+                                           epsTransform,
+                                           EpsGraphicsUtilities.getEpsDrawMode(
+                                                   DrawMode.FILL,
+                                                   stroke ) );
     }
 
     /**
@@ -1530,9 +883,14 @@ public final class EpsGraphics2D extends Graphics2D {
      * @since 1.0
      */
     @Override
-    public boolean hit( final Rectangle rectangle, final Shape shape, final boolean onStroke ) {
-        Shape transformedShape = onStroke ? stroke.createStrokedShape( shape ) : shape;
-        transformedShape = epsTransform.createTransformedShape( transformedShape );
+    public boolean hit( final Rectangle rectangle,
+                        final Shape shape,
+                        final boolean onStroke ) {
+        Shape transformedShape = onStroke
+                                 ? stroke.createStrokedShape( shape )
+                                 : shape;
+        transformedShape
+                = epsTransform.createTransformedShape( transformedShape );
         final Area area = new Area( transformedShape );
         if ( clipArea != null ) {
             area.intersect( clipArea );
@@ -1540,7 +898,31 @@ public final class EpsGraphics2D extends Graphics2D {
         return area.intersects( rectangle );
     }
 
-    ////////////////////// Graphics method overrides /////////////////////////
+    /**
+     * Returns the device configuration associated with the local graphics
+     * environment, which is dependent on machine architecture and screen
+     * configurations, unique per user.
+     *
+     * @since 1.0
+     */
+    @Override
+    public GraphicsConfiguration getDeviceConfiguration() {
+        final GraphicsConfiguration graphicsConfiguration
+                = GraphicsUtilities.getDeviceConfiguration();
+        return graphicsConfiguration;
+    }    /**
+     * Returns the background color that is used by the {@link #clearRect}
+     * method.
+     *
+     * @return color The {@link Color} to use for pre-filling background
+     *         regions; potentially {@code null}, which is treated as a no-op
+     * @see #setBackground(java.awt.Color)
+     * @since 1.0
+     */
+    @Override
+    public Color getBackground() {
+        return backgroundColor;
+    }
 
     /**
      * Returns a new {@link Graphics} object that is identical to this
@@ -1551,18 +933,251 @@ public final class EpsGraphics2D extends Graphics2D {
     @Override
     public Graphics create() {
         return new EpsGraphics2D( this );
+    }    /**
+     * Sets the background color to be used by the {@link #clearRect} method;
+     * {@code null} is permitted in order to be consistent with the reference
+     * implementation's documentation, and is simply treated as a no-op.
+     * <p>
+     * There is no need to match or contrast the supplied color with any other
+     * cached color to avoid masking of graphics, as this is a specialized
+     * background object and isn't the same as that of the parent component.
+     *
+     * @param color The {@link Color} to use for pre-filling background regions;
+     *              potentially {@code null}, which is treated as a no-op
+     * @see #getBackground()
+     * @since 1.0
+     */
+    @Override
+    public void setBackground( final Color color ) {
+        backgroundColor = color;
+    }
+
+    /**
+     * Returns the current foreground color. This will be a default value
+     * (black) until it is changed using the {@link #setColor} method.
+     * <p>
+     * It is not recommended to call this method as it is supplied solely for
+     * backward compatibility with the older {@link Graphics} class; the newer
+     * {@link #getPaint} method should be used instead, as it supports various
+     * gradients that were added to {@link Graphics2D}. The cached foreground
+     * color and paint are guaranteed to stay in sync, so this method is safe.
+     *
+     * @return The current foreground color used for all graphics operations
+     * @see #setColor(java.awt.Color)
+     * @since 1.0
+     */
+    @Override
+    public Color getColor() {
+        return foregroundColor;
+    }    /**
+     * Returns the current {@link Composite} value for alpha transparency; not
+     * supported by EPS or PostScript.
+     *
+     * @see #setComposite(java.awt.Composite)
+     * @since 1.0
+     */
+    @Override
+    public Composite getComposite() {
+        return composite;
+    }
+
+    /**
+     * Sets the Color to be used when drawing all future shapes, text, etc.
+     * <p>
+     * It is not recommended to call this method as it is supplied solely for
+     * backward compatibility with the older {@link Graphics} class; the newer
+     * {@link #setPaint} method should be used instead, as it supports various
+     * gradients that were added to {@link Graphics2D}. This method guarantees
+     * that the cached foreground color and paint stay in sync, so is safe.
+     * <p>
+     * There is no need to match or contrast the supplied color with any other
+     * cached color to avoid masking of graphics, as the background color for
+     * {@link Graphics2D} objects is specialized and doesn't interact with the
+     * foreground color, and as the paint color is kept in sync with
+     * foreground.
+     * <p>
+     * This function writes the new color to the EPS output even if it is the
+     * same as the current cached color, as the Graphics State might be
+     * different or there might have been a temporary color written previously.
+     *
+     * @param color The new foreground color used for all graphics operations
+     * @see #setPaint(java.awt.Paint)
+     * @since 1.0
+     */
+    @Override
+    public void setColor( final Color color ) {
+        if ( color == null ) {
+            return;
+        }
+
+        foregroundColor = color;
+        paint = color;
+
+        final ColorMode colorMode = getColorMode();
+        EpsGraphicsOperators.epsSetColor( epsDocument,
+                                          foregroundColor,
+                                          colorMode );
+    }    /**
+     * Sets the new {@link Composite} value for alpha transparency; not
+     * supported by EPS or PostScript.
+     *
+     * @see #getComposite()
+     * @since 1.0
+     */
+    @Override
+    public void setComposite( final Composite comp ) {
+        // Ignore invalid composite values as they aren't used by EPS.
+        if ( comp == null ) {
+            return;
+        }
+
+        composite = comp;
+    }
+
+    /**
+     * Returns the Color Mode used for all drawing operations.
+     *
+     * @return The {@link ColorMode} to use for the EPS Document
+     * @see #setColorMode(ColorMode)
+     * @since 1.0
+     */
+    public ColorMode getColorMode() {
+        return epsColorMode;
+    }    /**
+     * Returns the {@link Stroke} currently in use. Guaranteed to be an instance
+     * of {@link BasicStroke}.
+     *
+     * @see #setStroke(java.awt.Stroke)
+     * @since 1.0
+     */
+    @Override
+    public Stroke getStroke() {
+        return stroke;
+    }
+
+    /**
+     * Sets the EPS Color Mode to use when drawing on the document.
+     *
+     * @param colorMode The {@link ColorMode} to use for the EPS Document
+     * @see #getColorMode()
+     * @since 1.0
+     */
+    public void setColorMode( final ColorMode colorMode ) {
+        epsColorMode = colorMode;
+    }    /**
+     * Sets the current stroke.
+     * <p>
+     * This method now accepts all stroke types, but anything not derived from
+     * {@link BasicStroke} is treated downstream as a fill command, as EPS only
+     * supports the equivalent of the AWT {@link BasicStroke} class.
+     * <p>
+     * It is not advisable to exit early when the incoming {@link Stroke}
+     * matches the current cached {@link Stroke}, as that has been shown to have
+     * edge cases where the stroke was never set in the EPS file, and also it
+     * assumes that no other command or operators temporarily set the stroke.
+     *
+     * @throws IllegalArgumentException If the newStroke argument is null
+     * @see #getStroke()
+     * @since 1.0
+     */
+    @Override
+    public void setStroke( final Stroke newStroke ) {
+        if ( newStroke == null ) {
+            throw new IllegalArgumentException( "Null 'newStroke' argument." ); //$NON-NLS-1$
+        }
+
+        // Cache the new stroke, as long as it isn't null.
+        stroke = newStroke;
+
+        // If this is not a BasicStroke, meaning it is some third-party custom
+        // Stroke class that is derived from the original Stroke interface vs.
+        // derived from the BasicStroke parent implementation class, we treat it
+        // downstream as a "fill" (if it would otherwise be a "stroke"), as EPS
+        // only supports the equivalent of AWT's BasicStroke class.
+        if ( !( newStroke instanceof BasicStroke ) ) {
+            return;
+        }
+
+        // Write the PostScript basic stroke attributes and dash pattern.
+        final BasicStroke basicStroke = ( BasicStroke ) newStroke;
+        EpsGraphicsOperators.epsSetStroke( epsDocument, basicStroke );
+    }
+
+    /**
+     * Sets the Paint Mode of this {@link EpsGraphics2D} object to overwrite the
+     * destination {@link EpsDocument} with the current foreground paint color.
+     * <p>
+     * This method does nothing in the EPS context as EPS doesn't support it.
+     *
+     * @since 1.0
+     */
+    @Override
+    public void setPaintMode() {
+        // Do nothing; paint overwrite mode is the only method supported anyway.
+    }    /**
+     * Returns the current value for the specified Rendering Hint.
+     * <p>
+     * See the {@link EpsRenderingHints} class for details on supported hints.
+     *
+     * @param hintKey The Rendering Hint key
+     * @return The current value for the specified Rendering Hint (or
+     *         {@code null} if not found)
+     * @see #setRenderingHint(java.awt.RenderingHints.Key, java.lang.Object)
+     * @since 1.0
+     */
+    @Override
+    public Object getRenderingHint( final RenderingHints.Key hintKey ) {
+        return renderingHints.get( hintKey );
+    }
+
+    /**
+     * Sets the Paint Mode of this {@link EpsGraphics2D} object to alternate the
+     * destination {@link EpsDocument} between the supplied new color and the
+     * current foreground paint color.
+     * <p>
+     * This method does nothing in the EPS context as EPS doesn't support it.
+     *
+     * @since 1.0
+     */
+    @Override
+    public void setXORMode( final Color color ) {
+        // Do nothing; paint overwrite mode is the only method supported anyway.
+    }    /**
+     * Sets the value for the specified Rendering Hint.
+     *
+     * @param hintKey   The Rendering Hint key
+     * @param hintValue The Rendering Hint value
+     * @see #getRenderingHint(java.awt.RenderingHints.Key)
+     * @since 1.0
+     */
+    @Override
+    public void setRenderingHint( final RenderingHints.Key hintKey,
+                                  final Object hintValue ) {
+        renderingHints.put( hintKey, hintValue );
     }
 
     /**
      * Returns the Font currently being used.
      *
-     * @since 1.0
-     *
      * @see #setFont(java.awt.Font)
+     * @since 1.0
      */
     @Override
     public Font getFont() {
         return font;
+    }    /**
+     * Returns a copy of the Rendering Hints. Modifying the returned copy has no
+     * impact on the state of this {@link EpsGraphics2D} instance.
+     *
+     * @return The Rendering Hints (never {@code null}).
+     * @see #setRenderingHints(java.util.Map)
+     * @since 1.0
+     */
+    @Override
+    public RenderingHints getRenderingHints() {
+        final RenderingHints renderingHintsCopy
+                = ( RenderingHints ) renderingHints.clone();
+        return renderingHintsCopy;
     }
 
     /**
@@ -1570,26 +1185,38 @@ public final class EpsGraphics2D extends Graphics2D {
      * All subsequent text operations using this graphics context use this
      * {@link Font}. A null argument triggers the setting of the default font.
      *
-     * @param fontCandidate
-     *            The new font to use; set to default font if {@code null}
-     *
-     * @since 1.0
-     *
+     * @param fontCandidate The new font to use; set to default font if
+     *                      {@code null}
      * @see #getFont()
+     * @since 1.0
      */
     @Override
     public void setFont( final Font fontCandidate ) {
-        font = ( fontCandidate != null ) ? fontCandidate : Font.decode( null );
+        font = ( fontCandidate != null )
+               ? fontCandidate
+               : Font.decode( null );
 
         // Set the Font in the EPS Document, but only if not in Vectorized Text
         // Mode, as we vectorize the text vs. writing strings in that case, and
         // there's no point in potentially triggering document load errors if
         // the unused fonts aren't found or have inadequate substitute mappings.
-        final Object textRenderingMode =
-                                       getRenderingHint( EpsRenderingHints.KEY_TEXT_RENDERING_MODE );
-        if ( EpsRenderingHints.VALUE_TEXT_RENDERING_MODE_TEXT.equals( textRenderingMode ) ) {
+        final Object textRenderingMode
+                = getRenderingHint( EpsRenderingHints.KEY_TEXT_RENDERING_MODE );
+        if ( EpsRenderingHints.VALUE_TEXT_RENDERING_MODE_TEXT.equals(
+                textRenderingMode ) ) {
             EpsGraphicsOperators.epsSetfont( epsDocument, font );
         }
+    }    /**
+     * Sets (replaces) the Rendering Hints to the specified collection.
+     *
+     * @param hints The new Rendering Hints ({@code null} not permitted)
+     * @see #getRenderingHints()
+     * @since 1.0
+     */
+    @Override
+    public void setRenderingHints( final Map< ?, ? > hints ) {
+        renderingHints.clear();
+        addRenderingHints( hints );
     }
 
     /**
@@ -1598,14 +1225,22 @@ public final class EpsGraphics2D extends Graphics2D {
      * This override may be removed from future library updates, as it exactly
      * matches the implementation in AWT's {@link Graphics} base class.
      *
-     * @since 1.0
-     *
      * @see #getFontMetrics(Font)
+     * @since 1.0
      */
     @Override
     public FontMetrics getFontMetrics() {
         final Font currentFont = getFont();
         return getFontMetrics( currentFont );
+    }    /**
+     * Adds all of the supplied Rendering Hints to the existing collection.
+     *
+     * @param hints The Rendering Hints to add ({@code null} not permitted).
+     * @since 1.0
+     */
+    @Override
+    public void addRenderingHints( final Map< ?, ? > hints ) {
+        renderingHints.putAll( hints );
     }
 
     /**
@@ -1618,9 +1253,63 @@ public final class EpsGraphics2D extends Graphics2D {
      */
     @Override
     public FontMetrics getFontMetrics( final Font fontToMeasure ) {
-        final FontMetrics fontMetrics = FontUtilities.getFontMetrics( fontToMeasure );
+        final FontMetrics fontMetrics = FontUtilities.getFontMetrics(
+                fontToMeasure );
 
         return fontMetrics;
+    }    /**
+     * Returns the default {@link FontRenderContext} used for measuring text for
+     * Vectorized Text Mode.
+     *
+     * @since 1.0
+     */
+    @Override
+    public FontRenderContext getFontRenderContext() {
+        return FontUtilities.getFontRenderContextForVectorization();
+    }
+
+    /**
+     * Returns the bounding rectangle of the current clipping area.
+     *
+     * @see #getClip()
+     * @since 1.0
+     */
+    @Override
+    public Rectangle getClipBounds() {
+        final Shape clip = getClip();
+        if ( clip == null ) {
+            return null;
+        }
+
+        return clip.getBounds();
+    }
+
+    /**
+     * Intersects the current clip with the specified rectangle.
+     *
+     * @since 1.0
+     */
+    @Override
+    public void clipRect( final int x,
+                          final int y,
+                          final int width,
+                          final int height ) {
+        clip( new Rectangle( x, y, width, height ) );
+    }
+
+    /**
+     * Sets the current clip to the rectangle specified by the given
+     * coordinates.
+     *
+     * @see #setClip(java.awt.Shape)
+     * @since 1.0
+     */
+    @Override
+    public void setClip( final int x,
+                         final int y,
+                         final int width,
+                         final int height ) {
+        setClip( new Rectangle( x, y, width, height ) );
     }
 
     /**
@@ -1629,10 +1318,8 @@ public final class EpsGraphics2D extends Graphics2D {
      * @return A Shape object representing the current clipping area, or
      *         {@code null} if no clip is set or if the current transform is
      *         either {@code null} or non-invertible.
-     *
-     * @since 1.0
-     *
      * @see #setClip(java.awt.Shape)
+     * @since 1.0
      */
     @Override
     public Shape getClip() {
@@ -1640,7 +1327,8 @@ public final class EpsGraphics2D extends Graphics2D {
             return null;
         }
 
-        final AffineTransform inverseTransform = GraphicsUtilities.getInverseMatrix( epsTransform );
+        final AffineTransform inverseTransform
+                = GraphicsUtilities.getInverseMatrix( epsTransform );
         if ( inverseTransform == null ) {
             return null;
         }
@@ -1649,7 +1337,8 @@ public final class EpsGraphics2D extends Graphics2D {
             inverseTransform.concatenate( clipTransform );
         }
 
-        final Shape clipShape = inverseTransform.createTransformedShape( clipArea );
+        final Shape clipShape = inverseTransform.createTransformedShape(
+                clipArea );
 
         return clipShape;
     }
@@ -1657,17 +1346,16 @@ public final class EpsGraphics2D extends Graphics2D {
     /**
      * Sets the current clipping area to an clipping shape of arbitrary shape.
      * <p>
-     * Although this is a legacy method and the only one to access the {@code
-     * EpsDocument.setClipSet} method, the copy constructor on this class
+     * Although this is a legacy method and the only one to access the
+     * {@code EpsDocument.setClipSet} method, the copy constructor on this class
      * allows for several instances of {@link EpsGraphics2D} to point to the
      * same instance of {@link EpsDocument}, and thus the clipping might accrue
      * and modify from different sources at different times, meaning that it is
      * probably still best to have the {@link EpsDocument} class manage the clip
      * set flag than to move that flag and its setter/getter methods here.
      *
-     * @since 1.0
-     *
      * @see #getClip()
+     * @since 1.0
      */
     @Override
     public void setClip( final Shape clipShape ) {
@@ -1695,89 +1383,64 @@ public final class EpsGraphics2D extends Graphics2D {
         EpsGraphicsOperators.epsGsave( epsDocument );
 
         // Draw the new clip shape, or do whatever we do in Clip Mode.
-        EpsGraphicsOperators
-                .epsDrawShape( epsDocument,
-                               clipShape,
-                               epsTransform,
-                               EpsGraphicsUtilities.getEpsDrawMode( DrawMode.CLIP, stroke ) );
+        EpsGraphicsOperators.epsDrawShape( epsDocument,
+                                           clipShape,
+                                           epsTransform,
+                                           EpsGraphicsUtilities.getEpsDrawMode(
+                                                   DrawMode.CLIP,
+                                                   stroke ) );
     }
 
     /**
-     * Returns the bounding rectangle of the current clipping area.
+     * Returns a flag for whether or not a clipping rectangle is active
+     * ({@code true} if so; {@code false} if not).
      *
+     * @return {@code true} if a clipping rectangle is active; {@code false}
+     *         otherwise
+     * @see #setClipActive(boolean)
      * @since 1.0
-     *
-     * @see #getClip()
      */
-    @Override
-    public Rectangle getClipBounds() {
-        final Shape clip = getClip();
-        if ( clip == null ) {
-            return null;
-        }
-
-        return clip.getBounds();
+    public boolean isClipActive() {
+        return clipActive;
     }
 
     /**
-     * Returns the bounding rectangle of the current clipping area.
+     * Sets a flag for whether or not a clipping rectangle is active
+     * ({@code true} if so; {@code false} if not).
      *
+     * @param clippingRectangleActive Set to {@code true} if a clipping
+     *                                rectangle is active; {@code false}
+     *                                otherwise
+     * @see #isClipActive()
      * @since 1.0
      */
-    @Override
-    public Rectangle getClipBounds( final Rectangle rectangle ) {
-        if ( clipArea == null ) {
-            return rectangle;
-        }
-
-        // Although the Rectangle should be integer based, it is safer to assume
-        // otherwise and to round to the nearest integer just in case.
-        final Rectangle clipBounds = getClipBounds();
-        rectangle.setLocation( ( int ) FastMath.round( clipBounds.getX() ),
-                               ( int ) FastMath.round( clipBounds.getY() ) );
-        rectangle.setSize( ( int ) FastMath.round( clipBounds.getWidth() ),
-                           ( int ) FastMath.round( clipBounds.getHeight() ) );
-
-        return rectangle;
+    public void setClipActive( final boolean clippingRectangleActive ) {
+        clipActive = clippingRectangleActive;
     }
 
     /**
-     * Intersects the current clip with the specified rectangle.
+     * This method does nothing in this particular implementation.
+     * <p>
+     * The "copy area" operation assumes that the output is in bitmap form,
+     * which is not the case for EPS output, so we silently ignore this method
+     * call.
      *
+     * @param x      The x-coordinate of the area to be copied
+     * @param y      The y-coordinate of the area to be copied
+     * @param width  The width of the area to be copied
+     * @param height The height of the area to be copied
+     * @param dx     The delta x for the copied data
+     * @param dy     The delta y for the copied data
      * @since 1.0
      */
     @Override
-    public void clipRect( final int x, final int y, final int width, final int height ) {
-        clip( new Rectangle( x, y, width, height ) );
-    }
-
-    /**
-     * Sets the current clip to the rectangle specified by the given
-     * coordinates.
-     *
-     * @since 1.0
-     *
-     * @see #setClip(java.awt.Shape)
-     */
-    @Override
-    public void setClip( final int x, final int y, final int width, final int height ) {
-        setClip( new Rectangle( x, y, width, height ) );
-    }
-
-    /**
-     * Returns {@code true} if the specified rectangular area might intersect
-     * the current clipping area; {@code false} otherwise.
-     *
-     * @since 1.0
-     */
-    @Override
-    public boolean hitClip( final int x, final int y, final int width, final int height ) {
-        if ( clipArea == null ) {
-            return true;
-        }
-
-        final Rectangle rectangle = new Rectangle( x, y, width, height );
-        return hit( rectangle, clipArea, true );
+    public void copyArea( final int x,
+                          final int y,
+                          final int width,
+                          final int height,
+                          final int dx,
+                          final int dy ) {
+        // Do nothing; this operation is silently ignored in the EPS context.
     }
 
     /**
@@ -1786,9 +1449,34 @@ public final class EpsGraphics2D extends Graphics2D {
      * @since 1.0
      */
     @Override
-    public void drawLine( final int x1, final int y1, final int x2, final int y2 ) {
+    public void drawLine( final int x1,
+                          final int y1,
+                          final int x2,
+                          final int y2 ) {
         setLine( x1, y1, x2, y2 );
         draw( line );
+    }
+
+    /**
+     * Sets the attributes of the reusable {@link Line2D} object that is used by
+     * the {@link #drawLine(int, int, int, int)} method.
+     *
+     * @param x1 The X coordinate of the start point.
+     * @param y1 The Y coordinate of the start point.
+     * @param x2 The X coordinate of the end point.
+     * @param y2 The Y coordinate of the end point.
+     * @since 1.0
+     */
+    private void setLine( final double x1,
+                          final double y1,
+                          final double x2,
+                          final double y2 ) {
+        if ( line == null ) {
+            line = new Line2D.Double( x1, y1, x2, y2 );
+        }
+        else {
+            line.setLine( x1, y1, x2, y2 );
+        }
     }
 
     /**
@@ -1797,7 +1485,10 @@ public final class EpsGraphics2D extends Graphics2D {
      * @since 1.0
      */
     @Override
-    public void fillRect( final int x, final int y, final int width, final int height ) {
+    public void fillRect( final int x,
+                          final int y,
+                          final int width,
+                          final int height ) {
         // Avoid potentially problematic cases of inverted geometry.
         if ( ( width < 0 ) || ( height < 0 ) ) {
             return;
@@ -1814,12 +1505,40 @@ public final class EpsGraphics2D extends Graphics2D {
     }
 
     /**
+     * Sets the attributes of the reusable {@link Rectangle2D} object that is
+     * used by the {@link #drawRect(int, int, int, int)} and
+     * {@link #fillRect(int, int, int, int)} methods.
+     *
+     * @param x      The X coordinate of the upper-left corner of the newly
+     *               constructed {@link Rectangle2D}
+     * @param y      The Y coordinate of the upper-left corner of the newly
+     *               constructed {@link Rectangle2D}
+     * @param width  The width of the newly constructed {@link Rectangle2D}
+     * @param height The height of the newly constructed {@link Rectangle2D}
+     * @since 1.0
+     */
+    private void setRect( final int x,
+                          final int y,
+                          final int width,
+                          final int height ) {
+        if ( rect == null ) {
+            rect = new Rectangle2D.Double( x, y, width, height );
+        }
+        else {
+            rect.setRect( x, y, width, height );
+        }
+    }
+
+    /**
      * Draws a rectangle with top-left corner placed at (x,y).
      *
      * @since 1.0
      */
     @Override
-    public void drawRect( final int x, final int y, final int width, final int height ) {
+    public void drawRect( final int x,
+                          final int y,
+                          final int width,
+                          final int height ) {
         // Avoid potentially problematic cases of inverted geometry.
         if ( ( width < 0 ) || ( height < 0 ) ) {
             return;
@@ -1839,12 +1558,14 @@ public final class EpsGraphics2D extends Graphics2D {
      * Clears the specified rectangular region using the current background
      * color. Has no effect if the current background color is {@code null}.
      *
-     * @since 1.0
-     *
      * @see #getBackground()
+     * @since 1.0
      */
     @Override
-    public void clearRect( final int x, final int y, final int width, final int height ) {
+    public void clearRect( final int x,
+                           final int y,
+                           final int width,
+                           final int height ) {
         final Color background = getBackground();
         if ( background == null ) {
             return;
@@ -1856,14 +1577,24 @@ public final class EpsGraphics2D extends Graphics2D {
         fillRect( x, y, width, height );
 
         setPaint( previousColor );
+    }    /**
+     * Translates the origin of the EpsGraphics2D Graphics Context to the point
+     * (x,y) in the current coordinate system.
+     *
+     * @see #translate(double, double)
+     * @since 1.0
+     */
+    @Override
+    public void translate( final int translateX,
+                           final int translateY ) {
+        translate( ( double ) translateX, ( double ) translateY );
     }
 
     /**
      * Draws a rounded rectangle.
      *
-     * @since 1.0
-     *
      * @see #fillRoundRect(int, int, int, int, int, int)
+     * @since 1.0
      */
     @Override
     public void drawRoundRect( final int x,
@@ -1885,14 +1616,73 @@ public final class EpsGraphics2D extends Graphics2D {
             setRoundRect( x, y, width, height, arcWidth, arcHeight );
             draw( roundRect );
         }
+    }    /**
+     * Concatenates the current EpsGraphics2D Transform with a translation
+     * transform.
+     *
+     * @since 1.0
+     */
+    @Override
+    public void translate( final double translateX,
+                           final double translateY ) {
+        final AffineTransform translation
+                = AffineTransform.getTranslateInstance( translateX,
+                                                        translateY );
+        transform( translation );
+    }
+
+    /**
+     * Sets the attributes of the reusable {@link RoundRectangle2D} object that
+     * is used by the {@link #drawRoundRect(int, int, int, int, int, int)} and
+     * {@link #fillRoundRect(int, int, int, int, int, int)} methods.
+     *
+     * @param x         The X coordinate of the newly constructed
+     *                  {@link RoundRectangle2D}
+     * @param y         The Y coordinate of the newly constructed
+     *                  {@link RoundRectangle2D}
+     * @param width     The width to which to set the newly constructed
+     *                  {@link RoundRectangle2D}
+     * @param height    The height to which to set the newly constructed
+     *                  {@link RoundRectangle2D}
+     * @param arcWidth  The width of the arc to use to round off the corners of
+     *                  the newly constructed {@link RoundRectangle2D}
+     * @param arcHeight The height of the arc to use to round off the corners of
+     *                  the newly constructed {@link RoundRectangle2D}
+     * @since 1.0
+     */
+    private void setRoundRect( final int x,
+                               final int y,
+                               final int width,
+                               final int height,
+                               final int arcWidth,
+                               final int arcHeight ) {
+        if ( roundRect == null ) {
+            roundRect = new RoundRectangle2D.Double( x,
+                                                     y,
+                                                     width,
+                                                     height,
+                                                     arcWidth,
+                                                     arcHeight );
+        }
+        else {
+            roundRect.setRoundRect( x, y, width, height, arcWidth, arcHeight );
+        }
+    }    /**
+     * Concatenates the current EpsGraphics2D Transform with a rotation
+     * transform.
+     *
+     * @since 1.0
+     */
+    @Override
+    public void rotate( final double theta ) {
+        rotate( theta, 0.0d, 0.0d );
     }
 
     /**
      * Fills a rounded rectangle.
      *
-     * @since 1.0
-     *
      * @see #drawRoundRect(int, int, int, int, int, int)
+     * @since 1.0
      */
     @Override
     public void fillRoundRect( final int x,
@@ -1914,40 +1704,116 @@ public final class EpsGraphics2D extends Graphics2D {
             setRoundRect( x, y, width, height, arcWidth, arcHeight );
             fill( roundRect );
         }
+    }    /**
+     * Concatenates the current EpsGraphics2D Transform with a translated
+     * rotation transform.
+     *
+     * @since 1.0
+     */
+    @Override
+    public void rotate( final double theta,
+                        final double rotateX,
+                        final double rotateY ) {
+        final AffineTransform rotation = AffineTransform.getRotateInstance(
+                theta,
+                rotateX,
+                rotateY );
+        transform( rotation );
     }
 
     /**
      * Draws an oval.
      *
-     * @since 1.0
-     *
      * @see #fillOval(int, int, int, int)
+     * @since 1.0
      */
     @Override
-    public void drawOval( final int x, final int y, final int width, final int height ) {
+    public void drawOval( final int x,
+                          final int y,
+                          final int width,
+                          final int height ) {
         setOval( x, y, width, height );
         draw( oval );
+    }    /**
+     * Concatenates the current EpsGraphics2D Transform with a scaling
+     * transformation.
+     *
+     * @since 1.0
+     */
+    @Override
+    public void scale( final double scaleX,
+                       final double scaleY ) {
+        final AffineTransform scale = AffineTransform.getScaleInstance( scaleX,
+                                                                        scaleY );
+        transform( scale );
+    }
+
+    /**
+     * Sets the attributes of the reusable {@link Ellipse2D} object that is used
+     * by the {@link #drawOval(int, int, int, int)} and
+     * {@link #fillOval(int, int, int, int)} methods.
+     *
+     * @param x      The X coordinate of the upper-left corner of the framing
+     *               rectangle
+     * @param y      the Y coordinate of the upper-left corner of the framing
+     *               rectangle
+     * @param width  The width of the framing rectangle
+     * @param height The height of the framing rectangle
+     * @since 1.0
+     */
+    private void setOval( final int x,
+                          final int y,
+                          final int width,
+                          final int height ) {
+        if ( oval == null ) {
+            oval = new Ellipse2D.Double( x, y, width, height );
+        }
+        else {
+            oval.setFrame( x, y, width, height );
+        }
+    }    /**
+     * Concatenates the current EpsGraphics2D Transform with a shearing
+     * transform.
+     *
+     * @since 1.0
+     */
+    @Override
+    public void shear( final double shearX,
+                       final double shearY ) {
+        transform( AffineTransform.getShearInstance( shearX, shearY ) );
     }
 
     /**
      * Fills an oval.
      *
-     * @since 1.0
-     *
      * @see #drawOval(int, int, int, int)
+     * @since 1.0
      */
     @Override
-    public void fillOval( final int x, final int y, final int width, final int height ) {
+    public void fillOval( final int x,
+                          final int y,
+                          final int width,
+                          final int height ) {
         setOval( x, y, width, height );
         fill( oval );
+    }    /**
+     * Composes an AffineTransform object with the Transform in this
+     * EpsGraphics2D according to the rule last-specified-first-applied.
+     *
+     * @since 1.0
+     */
+    @Override
+    public void transform( final AffineTransform transform ) {
+        final AffineTransform affine = getTransform();
+        affine.concatenate( transform );
+        setTransform( affine );
     }
 
     /**
      * Draws an arc.
      *
-     * @since 1.0
-     *
      * @see #fillArc(int, int, int, int, int, int)
+     * @since 1.0
      */
     @Override
     public void drawArc( final int x,
@@ -1958,14 +1824,85 @@ public final class EpsGraphics2D extends Graphics2D {
                          final int arcAngle ) {
         setArc( x, y, width, height, startAngle, arcAngle, Arc2D.OPEN );
         draw( arc );
+    }    /**
+     * Returns a copy of the {@link AffineTransform} used by this
+     * {@link EpsGraphics2D} instance.
+     *
+     * @see #setTransform(java.awt.geom.AffineTransform)
+     * @since 1.0
+     */
+    @Override
+    public AffineTransform getTransform() {
+        return new AffineTransform( epsTransform );
+    }
+
+    /**
+     * Sets the attributes of the reusable {@link Arc2D} object that is used by
+     * {@link #drawArc(int, int, int, int, int, int)} and
+     * {@link #fillArc(int, int, int, int, int, int)} methods.
+     *
+     * @param x           The X coordinate of the upper-left corner of the arc's
+     *                    framing rectangle
+     * @param y           The Y coordinate of the upper-left corner of the arc'
+     *                    framing rectangle
+     * @param width       The overall width of the full ellipse of which this
+     *                    arc is a partial section
+     * @param height      The overall height of the full ellipse of which this
+     *                    arc is a partial section
+     * @param startAngle  The starting angle of the arc in degrees (0 = 3
+     *                    o'clock)
+     * @param arcAngle    The angular extent of the arc in degrees
+     *                    (anti-clockwise)
+     * @param closureType The closure type for the arc: OPEN, CHORD, or PIE
+     * @since 1.0
+     */
+    private void setArc( final int x,
+                         final int y,
+                         final int width,
+                         final int height,
+                         final int startAngle,
+                         final int arcAngle,
+                         final int closureType ) {
+        if ( arc == null ) {
+            arc = new Arc2D.Double( x,
+                                    y,
+                                    width,
+                                    height,
+                                    startAngle,
+                                    arcAngle,
+                                    closureType );
+        }
+        else {
+            arc.setArc( x,
+                        y,
+                        width,
+                        height,
+                        startAngle,
+                        arcAngle,
+                        closureType );
+        }
+    }    /**
+     * Sets the AffineTransform to be used by this EpsGraphics2D, or resets to
+     * the identity transform if {@code null} is passed as the new transform.
+     *
+     * @see #getTransform()
+     * @since 1.0
+     */
+    @Override
+    public void setTransform( final AffineTransform transform ) {
+        if ( transform == null ) {
+            epsTransform = new AffineTransform();
+        }
+        else {
+            epsTransform = new AffineTransform( transform );
+        }
     }
 
     /**
      * Fills an arc.
      *
-     * @since 1.0
-     *
      * @see #drawArc(int, int, int, int, int, int)
+     * @since 1.0
      */
     @Override
     public void fillArc( final int x,
@@ -1976,35 +1913,60 @@ public final class EpsGraphics2D extends Graphics2D {
                          final int arcAngle ) {
         setArc( x, y, width, height, startAngle, arcAngle, Arc2D.PIE );
         fill( arc );
+    }    /**
+     * Intersects the current clip with the interior of the specified Shape and
+     * sets the clip to the resulting intersection.
+     *
+     * @since 1.0
+     */
+    @Override
+    public void clip( final Shape shape ) {
+        if ( shape == null ) {
+            setClip( null );
+            return;
+        }
+
+        if ( clipArea == null ) {
+            setClip( shape );
+            return;
+        }
+
+        final Area area = new Area( clipArea );
+        area.intersect( new Area( shape ) );
+        setClip( area );
     }
 
     /**
      * Draws a polyline using integer coordinates.
      *
-     * @param xPoints
-     *            An integer array of x coordinates for the polyline
-     * @param yPoints
-     *            An integer array of x coordinates for the polyline
-     * @param numberOfPoints
-     *            The number of integer-based points to make for this polyline
-     *
+     * @param xPoints        An integer array of x coordinates for the polyline
+     * @param yPoints        An integer array of x coordinates for the polyline
+     * @param numberOfPoints The number of integer-based points to make for this
+     *                       polyline
      * @since 1.0
      */
     @Override
-    public void drawPolyline( final int[] xPoints, final int[] yPoints, final int numberOfPoints ) {
-        final GeneralPath path = ShapeUtilities.makePolyline( xPoints, yPoints, numberOfPoints );
+    public void drawPolyline( final int[] xPoints,
+                              final int[] yPoints,
+                              final int numberOfPoints ) {
+        final GeneralPath path = ShapeUtilities.makePolyline( xPoints,
+                                                              yPoints,
+                                                              numberOfPoints );
         draw( path );
     }
+
+    ////////////////////// Graphics method overrides /////////////////////////
 
     /**
      * Draws a polygon made with the specified points.
      *
-     * @since 1.0
-     *
      * @see #fillPolygon(int[], int[], int)
+     * @since 1.0
      */
     @Override
-    public void drawPolygon( final int[] xPoints, final int[] yPoints, final int nPoints ) {
+    public void drawPolygon( final int[] xPoints,
+                             final int[] yPoints,
+                             final int nPoints ) {
         final Polygon polygon = new Polygon( xPoints, yPoints, nPoints );
         draw( polygon );
     }
@@ -2012,9 +1974,8 @@ public final class EpsGraphics2D extends Graphics2D {
     /**
      * Draws a polygon.
      *
-     * @since 1.0
-     *
      * @see #drawPolygon(int[], int[], int)
+     * @since 1.0
      */
     @Override
     public void drawPolygon( final Polygon polygon ) {
@@ -2027,7 +1988,9 @@ public final class EpsGraphics2D extends Graphics2D {
      * @since 1.0
      */
     @Override
-    public void fillPolygon( final int[] xPoints, final int[] yPoints, final int nPoints ) {
+    public void fillPolygon( final int[] xPoints,
+                             final int[] yPoints,
+                             final int nPoints ) {
         final Polygon polygon = new Polygon( xPoints, yPoints, nPoints );
         fill( polygon );
     }
@@ -2048,9 +2011,8 @@ public final class EpsGraphics2D extends Graphics2D {
      * This override will be removed from future library updates, as it exactly
      * matches the implementation in AWT's {@link Graphics} base class.
      *
-     * @since 1.0
-     *
      * @see #drawString(java.lang.String, int, int)
+     * @since 1.0
      */
     @Override
     public void drawChars( final char[] data,
@@ -2065,9 +2027,8 @@ public final class EpsGraphics2D extends Graphics2D {
     /**
      * Draws the specified bytes, starting from (x,y).
      *
-     * @since 1.0
-     *
      * @see #drawString(java.lang.String, int, int)
+     * @since 1.0
      */
     @Override
     public void drawBytes( final byte[] data,
@@ -2165,7 +2126,17 @@ public final class EpsGraphics2D extends Graphics2D {
                               final int sx2,
                               final int sy2,
                               final ImageObserver observer ) {
-        return drawImage( img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, Color.WHITE, observer );
+        return drawImage( img,
+                          dx1,
+                          dy1,
+                          dx2,
+                          dy2,
+                          sx1,
+                          sy1,
+                          sx2,
+                          sy2,
+                          Color.WHITE,
+                          observer );
     }
 
     /**
@@ -2207,8 +2178,11 @@ public final class EpsGraphics2D extends Graphics2D {
 
         // Convert the image to a two-dimensional array of integer-based pixels.
         // Each pixel is considered a "sample" in PostScript terminology.
-        final int[] pixels =
-                           ImageConversionUtilities.getImagePixels( img, sx1, sy1, width, height );
+        final int[] pixels = ImageConversionUtilities.getImagePixels( img,
+                                                                      sx1,
+                                                                      sy1,
+                                                                      width,
+                                                                      height );
         if ( ( pixels == null ) || ( pixels.length <= 0 ) ) {
             return false;
         }
@@ -2222,7 +2196,8 @@ public final class EpsGraphics2D extends Graphics2D {
         // https://www-cdf.fnal.gov/offline/PostScript/PLRM3.pdf
         final AffineTransform matrix = new AffineTransform( epsTransform );
         matrix.translate( dx1, dy1 );
-        matrix.scale( destWidth / ( double ) width, destHeight / ( double ) height );
+        matrix.scale( destWidth / ( double ) width,
+                      destHeight / ( double ) height );
         try {
             // Use the self-modifying version of this method added in Java
             // 1.6, as it allows for cleaner error handling due to any run-time
@@ -2286,73 +2261,17 @@ public final class EpsGraphics2D extends Graphics2D {
         final ColorMode colorMode = getColorMode();
 
         // Write the main image operator parameters (procedure and contents).
-        EpsImageOperators
-                .writeEpsImageOperatorParameters( epsDocument, width, height, pixels, colorMode );
+        EpsImageOperators.writeEpsImageOperatorParameters( epsDocument,
+                                                           width,
+                                                           height,
+                                                           pixels,
+                                                           colorMode );
 
         // Restore the Graphics State after writing the image, due to temporary
         // settings that might have differed from fonts and strokes.
         EpsGraphicsOperators.epsGrestore( epsDocument );
 
         return true;
-    }
-
-    /**
-     * This method does nothing in this particular implementation.
-     * <p>
-     * The "copy area" operation assumes that the output is in bitmap form,
-     * which is not the case for EPS output, so we silently ignore this method
-     * call.
-     *
-     * @param x
-     *            The x-coordinate of the area to be copied
-     * @param y
-     *            The y-coordinate of the area to be copied
-     * @param width
-     *            The width of the area to be copied
-     * @param height
-     *            The height of the area to be copied
-     * @param dx
-     *            The delta x for the copied data
-     * @param dy
-     *            The delta y for the copied data
-     *
-     * @since 1.0
-     */
-    @Override
-    public void copyArea( final int x,
-                          final int y,
-                          final int width,
-                          final int height,
-                          final int dx,
-                          final int dy ) {
-        // Do nothing; this operation is silently ignored in the EPS context.
-    }
-
-    /**
-     * Sets the Paint Mode of this {@link EpsGraphics2D} object to overwrite the
-     * destination {@link EpsDocument} with the current foreground paint color.
-     * <p>
-     * This method does nothing in the EPS context as EPS doesn't support it.
-     *
-     * @since 1.0
-     */
-    @Override
-    public void setPaintMode() {
-        // Do nothing; paint overwrite mode is the only method supported anyway.
-    }
-
-    /**
-     * Sets the Paint Mode of this {@link EpsGraphics2D} object to alternate the
-     * destination {@link EpsDocument} between the supplied new color and the
-     * current foreground paint color.
-     * <p>
-     * This method does nothing in the EPS context as EPS doesn't support it.
-     *
-     * @since 1.0
-     */
-    @Override
-    public void setXORMode( final Color color ) {
-        // Do nothing; paint overwrite mode is the only method supported anyway.
     }
 
     /**
@@ -2364,5 +2283,93 @@ public final class EpsGraphics2D extends Graphics2D {
     public void dispose() {
         // Nothing to do; there are no resources to dispose.
     }
+
+    /**
+     * Returns {@code true} if the specified rectangular area might intersect
+     * the current clipping area; {@code false} otherwise.
+     *
+     * @since 1.0
+     */
+    @Override
+    public boolean hitClip( final int x,
+                            final int y,
+                            final int width,
+                            final int height ) {
+        if ( clipArea == null ) {
+            return true;
+        }
+
+        final Rectangle rectangle = new Rectangle( x, y, width, height );
+        return hit( rectangle, clipArea, true );
+    }
+
+    /**
+     * Returns the bounding rectangle of the current clipping area.
+     *
+     * @since 1.0
+     */
+    @Override
+    public Rectangle getClipBounds( final Rectangle rectangle ) {
+        if ( clipArea == null ) {
+            return rectangle;
+        }
+
+        // Although the Rectangle should be integer based, it is safer to assume
+        // otherwise and to round to the nearest integer just in case.
+        final Rectangle clipBounds = getClipBounds();
+        rectangle.setLocation( ( int ) FastMath.round( clipBounds.getX() ),
+                               ( int ) FastMath.round( clipBounds.getY() ) );
+        rectangle.setSize( ( int ) FastMath.round( clipBounds.getWidth() ),
+                           ( int ) FastMath.round( clipBounds.getHeight() ) );
+
+        return rectangle;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

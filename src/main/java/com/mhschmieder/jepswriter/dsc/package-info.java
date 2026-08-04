@@ -30,10 +30,7 @@
  */
 /**
  * This package contains the jepswriter Library's functionality related to
- * Adobe's Document Structuring Conventions (DSC) Specification, applied to EPS.
- *
- * @version 1.0
- *
- * @author Mark Schmieder
+ * Adobe's Document Structuring Conventions (DSC) Specification, applied to
+ * EPS.
  */
 package com.mhschmieder.jepswriter.dsc;

@@ -31,9 +31,5 @@
 /**
  * This package contains the jepswriter Library's top-level classes, enums, and
  * interfaces, that are the ones most likely to be used by third-party codes.
- *
- * @version 1.0
- *
- * @author Mark Schmieder
  */
 package com.mhschmieder.jepswriter;

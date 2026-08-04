@@ -31,9 +31,5 @@
 /**
  * This package contains the jepswriter Library's classes that are specific to
  * using an AWT-based Graphics2D wrapper for EPS output.
- *
- * @version 1.0
- *
- * @author Mark Schmieder
  */
 package com.mhschmieder.jepswriter.graphics;

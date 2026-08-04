@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>jxlab</artifactId>
         <groupId>com.mhschmieder</groupId>
@@ -14,7 +16,9 @@
 
     <name>jepswriter</name>
     <url>https://github.com/mhschmieder/jepswriter</url>
-    <description>A Java AWT based library for creating Encapsulated PostScript (EPS) output via a custom Graphics2D canvas.</description>
+    <description>A Java AWT based library for creating Encapsulated PostScript
+        (EPS) output via a custom Graphics2D canvas.
+    </description>
 
     <licenses>
         <license>
@@ -26,8 +30,10 @@
 
     <scm>
         <url>https://github.com/mhschmieder/jepswriter</url>
-        <connection>scm:git:git://github.com/mhschmieder/jepswriter.git</connection>
-        <developerConnection>scm:git:git@github.com:mhschmieder/jepswriter.git</developerConnection>
+        <connection>scm:git:git://github.com/mhschmieder/jepswriter.git
+        </connection>
+        <developerConnection>scm:git:git@github.com:mhschmieder/jepswriter.git
+        </developerConnection>
     </scm>
 
     <developers>

@@ -31,9 +31,5 @@
 /**
  * This package contains the jepswriter Library's classes that are specific to
  * outputting the PostScript operators in a generic library-neutral fashion.
- *
- * @version 1.0
- *
- * @author Mark Schmieder
  */
 package com.mhschmieder.jepswriter.operators;

@@ -39,16 +39,10 @@ package com.mhschmieder.jepswriter.graphics;
  * whether strings are rendered as regular text or as vector graphics</li>
  * </ul>
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public final class EpsRenderingHints {
-
-    /**
-     * The default constructor is disabled, as this is a static constants class.
-     */
-    private EpsRenderingHints() {}
 
     /**
      * The key for the Rendering Hint that controls whether strings are rendered
@@ -58,10 +52,12 @@ public final class EpsRenderingHints {
      * precise rendering to match the on-screen appearance, as well as better
      * handling of rotated text (such as for vertical axis labels in charts). It
      * also handles the rendering of Unicode characters outside the normal
-     * US-ASCII 7-bit character set, without having to resort to embedded fonts.
+     * US-ASCII 7-bit character set, without having to resort to embedded
+     * fonts.
      * <p>
      * The resulting output has text that is much sharper and scalable, and
-     * eliminates downstream issues with unavailable fonts on different systems.
+     * eliminates downstream issues with unavailable fonts on different
+     * systems.
      * <p>
      * Affine Transforms can only affect the starting point of text using Basic
      * Text Rendering Mode - all text will be oriented horizontally regardless.
@@ -80,23 +76,29 @@ public final class EpsRenderingHints {
      * Current valid hint values are: {@link #VALUE_TEXT_RENDERING_MODE_TEXT}
      * and {@link #VALUE_TEXT_RENDERING_MODE_VECTOR}.
      */
-    public static final EpsRenderingHintsKey            KEY_TEXT_RENDERING_MODE          =
-                                                                                new EpsRenderingHintsKey( 0 );
-
+    public static final EpsRenderingHintsKey KEY_TEXT_RENDERING_MODE
+            = new EpsRenderingHintsKey( 0 );
     /**
      * Hint value for <code>KEY_TEXT_RENDERING_MODE</code> to specify that
      * strings should be written to the output using the standard EPS "show"
      * operator with the original text (string).
      */
-    @SuppressWarnings("nls") public static final Object VALUE_TEXT_RENDERING_MODE_TEXT   =
-                                                                                       "VALUE_TEXT_RENDERING_MODE_TEXT";
-
+    @SuppressWarnings( "nls" )
+    public static final Object VALUE_TEXT_RENDERING_MODE_TEXT
+            = "VALUE_TEXT_RENDERING_MODE_TEXT";
     /**
      * Hint value for <code>KEY_TEXT_RENDERING_MODE</code> to specify that
      * strings should be written to the output using vectorization to lines and
      * curves for EPS paths.
      */
-    @SuppressWarnings("nls") public static final Object VALUE_TEXT_RENDERING_MODE_VECTOR =
-                                                                                         "VALUE_TEXT_RENDERING_MODE_VECTOR";
+    @SuppressWarnings( "nls" )
+    public static final Object VALUE_TEXT_RENDERING_MODE_VECTOR
+            = "VALUE_TEXT_RENDERING_MODE_VECTOR";
 
+    /**
+     * The default constructor is disabled, as this is a static constants
+     * class.
+     */
+    private EpsRenderingHints() {
+    }
 }

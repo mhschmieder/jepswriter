@@ -43,42 +43,38 @@ import java.awt.Color;
  * "bind", which seems to be specific to EPS) if this code needs to be adapted
  * to work for standard PostScript or related formats.
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public final class EpsImageOperators {
 
     /**
-     * The default constructor is disabled, as this is a static utilities class.
+     * The default constructor is disabled, as this is a static utilities
+     * class.
      */
-    private EpsImageOperators() {}
+    private EpsImageOperators() {
+    }
 
     /////////////////// EPS image operator writer methods ////////////////////
 
     /**
      * Writes the preamble to the image operator; the parts before the pixels.
      * <p>
-     * This is a helper method that combines the writing of the image
-     * dimensions and the image transformation matrix to the EPS File, as a
-     * combined operation that preserves the necessary write order and also
-     * takes care of the image operator preamble.
+     * This is a helper method that combines the writing of the image dimensions
+     * and the image transformation matrix to the EPS File, as a combined
+     * operation that preserves the necessary write order and also takes care of
+     * the image operator preamble.
      * <p>
      * It is still necessary to break apart the overall writing of the image
      * operator, as the legacy code interrupts the parameters with a background
      * fill operation that also includes a "setcolor" operation.
      *
-     * @param epsWriter
-     *            The {@link EpsWriter} for writing the EPS content
-     * @param width
-     *            The source image width, in samples
-     * @param height
-     *            The source image height, in samples
-     * @param bitsPerSample
-     *            The number of bits per image sample (1, 2, 4, 8, etc.)
-     * @param imageMatrix
-     *            The user space to image space transformation matrix
-     *
+     * @param epsWriter     The {@link EpsWriter} for writing the EPS content
+     * @param width         The source image width, in samples
+     * @param height        The source image height, in samples
+     * @param bitsPerSample The number of bits per image sample (1, 2, 4, 8,
+     *                      etc.)
+     * @param imageMatrix   The user space to image space transformation matrix
      * @since 1.0
      */
     public static void writeEpsImageOperatorPreamble( final EpsWriter epsWriter,
@@ -96,24 +92,20 @@ public final class EpsImageOperators {
     /**
      * Writes the image dimensions, as part of the image operator preamble.
      * <p>
-     * This is a helper method that writes the image dimensions to the EPS
-     * File. It must be followed by the image transformation matrix. This
-     * method should remain private and final because it has specific order
+     * This is a helper method that writes the image dimensions to the EPS File.
+     * It must be followed by the image transformation matrix. This method
+     * should remain private and final because it has specific order
      * dependencies and thus is of no use to downstream clients or derived
      * classes. It should generally only be accessed by internal code.
      *
-     * @param epsWriter
-     *            The {@link EpsWriter} for writing the EPS content
-     * @param width
-     *            The source image width, in samples
-     * @param height
-     *            The source image height, in samples
-     * @param bitsPerSample
-     *            The number of bits per image sample (1, 2, 4, 8, etc.)
-     *
+     * @param epsWriter     The {@link EpsWriter} for writing the EPS content
+     * @param width         The source image width, in samples
+     * @param height        The source image height, in samples
+     * @param bitsPerSample The number of bits per image sample (1, 2, 4, 8,
+     *                      etc.)
      * @since 1.0
      */
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     private static void writeEpsImageDimensions( final EpsWriter epsWriter,
                                                  final int width,
                                                  final int height,
@@ -131,20 +123,17 @@ public final class EpsImageOperators {
     /**
      * Writes the image matrix, as part of the image operator preamble.
      * <p>
-     * This is a helper method that writes the image matrix to the EPS File.
-     * It must be followed by the image procedure and the image operator. This
+     * This is a helper method that writes the image matrix to the EPS File. It
+     * must be followed by the image procedure and the image operator. This
      * method should remain private and final because it has specific order
      * dependencies and thus is of no use to downstream clients or derived
      * classes. It should generally only be accessed by internal code.
      *
-     * @param epsWriter
-     *            The {@link EpsWriter} for writing the EPS content
-     * @param imageMatrix
-     *            The user space to image space transformation matrix
-     *
+     * @param epsWriter   The {@link EpsWriter} for writing the EPS content
+     * @param imageMatrix The user space to image space transformation matrix
      * @since 1.0
      */
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     private static void writeEpsImageMatrix( final EpsWriter epsWriter,
                                              final double[] imageMatrix ) {
         // Write the user space to image space transformation matrix.
@@ -169,26 +158,20 @@ public final class EpsImageOperators {
     /**
      * Writes the Image Procedure, followed by the actual Image Contents.
      * <p>
-     * This is a helper method that combines the writing of the image
-     * procedure and the image contents to the EPS File, as a combined operation
-     * that preserves the necessary write order and also takes care of the main
-     * image operator parameters.
+     * This is a helper method that combines the writing of the image procedure
+     * and the image contents to the EPS File, as a combined operation that
+     * preserves the necessary write order and also takes care of the main image
+     * operator parameters.
      * <p>
      * It is still necessary to break apart the overall writing of the image
      * operator, as the legacy code interrupts the parameters with a background
      * fill operation that also includes a "setcolor" operation.
      *
-     * @param epsWriter
-     *            The {@link EpsWriter} for writing the EPS content
-     * @param width
-     *            The source image width, in samples
-     * @param height
-     *            The source image height, in samples
-     * @param pixels
-     *            The pixel array to use for the EPS image
-     * @param colorMode
-     *            The current active Color Mode for EPS operators
-     *
+     * @param epsWriter The {@link EpsWriter} for writing the EPS content
+     * @param width     The source image width, in samples
+     * @param height    The source image height, in samples
+     * @param pixels    The pixel array to use for the EPS image
+     * @param colorMode The current active Color Mode for EPS operators
      * @since 1.0
      */
     public static void writeEpsImageOperatorParameters( final EpsWriter epsWriter,
@@ -200,7 +183,11 @@ public final class EpsImageOperators {
         EpsImageOperators.writeEpsImageProcedure( epsWriter, width, colorMode );
 
         // Draw the image contents (namely, the rectangular block of pixels).
-        EpsImageOperators.writeEpsImageContents( epsWriter, width, height, pixels, colorMode );
+        EpsImageOperators.writeEpsImageContents( epsWriter,
+                                                 width,
+                                                 height,
+                                                 pixels,
+                                                 colorMode );
     }
 
     /**
@@ -216,13 +203,9 @@ public final class EpsImageOperators {
      * has specific order dependencies and thus is of no use to downstream
      * clients or derived classes.
      *
-     * @param epsWriter
-     *            The {@link EpsWriter} for writing the EPS content
-     * @param width
-     *            The source image width, in samples
-     * @param colorMode
-     *            The current active Color Mode for EPS operators
-     *
+     * @param epsWriter The {@link EpsWriter} for writing the EPS content
+     * @param width     The source image width, in samples
+     * @param colorMode The current active Color Mode for EPS operators
      * @since 1.0
      */
     public static void writeEpsImageProcedure( final EpsWriter epsWriter,
@@ -230,130 +213,42 @@ public final class EpsImageOperators {
                                                final ColorMode colorMode ) {
         // Write the procedure for reading the image data, per Color Mode.
         switch ( colorMode ) {
-        case BITMAP:
-            // Bitmap images use the PostScript "image" operator.
-            //
-            // This could alternately use the "colorimage" operator with just
-            // one
-            // color component specified, but some viewers and editors may not
-            // handle such images correctly so it is safer to leave as-is.
-            epsImage( epsWriter, width );
+            case BITMAP:
+                // Bitmap images use the PostScript "image" operator.
+                //
+                // This could alternately use the "colorimage" operator with
+                // just
+                // one
+                // color component specified, but some viewers and editors
+                // may not
+                // handle such images correctly so it is safer to leave as-is.
+                epsImage( epsWriter, width );
 
-            break;
-        case GRAYSCALE:
-            // Grayscale images use the PostScript "image" operator.
-            //
-            // This could alternately use the "colorimage" operator with just
-            // one
-            // color component specified, but some viewers and editors may not
-            // handle such images correctly so it is safer to leave as-is.
-            epsImage( epsWriter, width );
+                break;
+            case GRAYSCALE:
+                // Grayscale images use the PostScript "image" operator.
+                //
+                // This could alternately use the "colorimage" operator with
+                // just
+                // one
+                // color component specified, but some viewers and editors
+                // may not
+                // handle such images correctly so it is safer to leave as-is.
+                epsImage( epsWriter, width );
 
-            break;
-        case RGB:
-            // RGB images use the PostScript "colorimage" operator.
-            epsColorimage( epsWriter, width, 3 );
+                break;
+            case RGB:
+                // RGB images use the PostScript "colorimage" operator.
+                epsColorimage( epsWriter, width, 3 );
 
-            break;
-        case CMYK:
-            // CMYK images use the PostScript "colorimage" operator.
-            epsColorimage( epsWriter, width, 4 );
+                break;
+            case CMYK:
+                // CMYK images use the PostScript "colorimage" operator.
+                epsColorimage( epsWriter, width, 4 );
 
-            break;
-        default:
-            break;
-        }
-    }
-
-    /**
-     * Writes the actual Image Contents, which is a rectangular blob of pixels.
-     * <p>
-     * This is a helper method that loops on the pixel array in order to write
-     * the image contents to the EPS File. It must be preceded by the relevant
-     * image operator and other parameters. This method should remain private
-     * and final because it has specific order dependencies and thus is of no
-     * use to downstream clients or derived classes.
-     *
-     * @param epsWriter
-     *            The {@link EpsWriter} for writing the EPS content
-     * @param width
-     *            The source image width, in samples
-     * @param height
-     *            The source image height, in samples
-     * @param pixels
-     *            The pixel array to use for the EPS image
-     * @param colorMode
-     *            The current active Color Mode for EPS operators
-     *
-     * @since 1.0
-     */
-    public static void writeEpsImageContents( final EpsWriter epsWriter,
-                                              final int width,
-                                              final int height,
-                                              final int[] pixels,
-                                              final ColorMode colorMode ) {
-        // Loop on the actual image content and write as successive two-digit
-        // hexadecimal strings. Insert newlines after every 64 characters.
-        StringBuilder contentLine = new StringBuilder();
-        for ( int y = 0; y < height; y++ ) {
-            for ( int x = 0; x < width; x++ ) {
-                final Color color = new Color( pixels[ x + ( width * y ) ] );
-
-                switch ( colorMode ) {
-                case BITMAP:
-                    final String bitmapHexValue = ColorUtilities.rgbToBitmapHex( color );
-                    contentLine.append( bitmapHexValue );
-
-                    break;
-                case GRAYSCALE:
-                    final String grayHexValue = ColorUtilities.rgbToGrayHex( color );
-                    contentLine.append( grayHexValue );
-
-                    break;
-                case RGB:
-                    final String[] rgbHexValues = ColorUtilities.rgbToRgbHex( color );
-                    final String redHexValue = rgbHexValues[ ColorConstants.RGB_RED_INDEX ];
-                    final String greenHexValue = rgbHexValues[ ColorConstants.RGB_GREEN_INDEX ];
-                    final String blueHexValue = rgbHexValues[ ColorConstants.RGB_BLUE_INDEX ];
-
-                    contentLine.append( redHexValue );
-                    contentLine.append( greenHexValue );
-                    contentLine.append( blueHexValue );
-
-                    break;
-                case CMYK:
-                    final String[] cmykHexValues = ColorUtilities.rgbToCmykHex( color );
-                    final String cyanHexValue = cmykHexValues[ ColorConstants.CMYK_CYAN_INDEX ];
-                    final String magentaHexValue =
-                                                 cmykHexValues[ ColorConstants.CMYK_MAGENTA_INDEX ];
-                    final String yellowHexValue = cmykHexValues[ ColorConstants.CMYK_YELLOW_INDEX ];
-                    final String blackHexValue = cmykHexValues[ ColorConstants.CMYK_BLACK_INDEX ];
-
-                    contentLine.append( cyanHexValue );
-                    contentLine.append( magentaHexValue );
-                    contentLine.append( yellowHexValue );
-                    contentLine.append( blackHexValue );
-
-                    break;
-                default:
-                    break;
-                }
-
-                // Try to keep the resulting EPS file human-readable by limiting
-                // to 64 characters per line (although 255 characters per line
-                // is the official limit for EPS).
-                if ( contentLine.length() > 64 ) {
-                    epsWriter.append( contentLine.toString() );
-
-                    contentLine = new StringBuilder();
-                }
-            }
-        }
-
-        // Write the remaining hexadecimal characters that overflowed from the
-        // final line written inside the 64-character loop above.
-        if ( contentLine.length() > 0 ) {
-            epsWriter.append( contentLine.toString() );
+                break;
+            default:
+                break;
         }
     }
 
@@ -367,15 +262,13 @@ public final class EpsImageOperators {
      * private because it has specific order dependencies and thus is of no use
      * to downstream clients or derived classes.
      *
-     * @param epsWriter
-     *            The {@link EpsWriter} for writing the EPS content
-     * @param width
-     *            The source image width, in samples
-     *
+     * @param epsWriter The {@link EpsWriter} for writing the EPS content
+     * @param width     The source image width, in samples
      * @since 1.0
      */
-    @SuppressWarnings("nls")
-    private static void epsImage( final EpsWriter epsWriter, final int width ) {
+    @SuppressWarnings( "nls" )
+    private static void epsImage( final EpsWriter epsWriter,
+                                  final int width ) {
         final StringBuilder procedure = new StringBuilder();
         procedure.append( "{currentfile " );
         procedure.append( width );
@@ -399,17 +292,15 @@ public final class EpsImageOperators {
      * private because it has specific order dependencies and thus is of no use
      * to downstream clients or derived classes.
      *
-     * @param epsWriter
-     *            The {@link EpsWriter} for writing the EPS content
-     * @param width
-     *            The source image width, in samples
-     * @param numberOfColorComponents
-     *            The number of color components for the image, which implicitly
-     *            sets the Color Space
-     *
+     * @param epsWriter               The {@link EpsWriter} for writing the EPS
+     *                                content
+     * @param width                   The source image width, in samples
+     * @param numberOfColorComponents The number of color components for the
+     *                                image, which implicitly sets the Color
+     *                                Space
      * @since 1.0
      */
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     private static void epsColorimage( final EpsWriter epsWriter,
                                        final int width,
                                        final int numberOfColorComponents ) {
@@ -435,4 +326,104 @@ public final class EpsImageOperators {
         epsWriter.append( "colorimage" );
     }
 
+    /**
+     * Writes the actual Image Contents, which is a rectangular blob of pixels.
+     * <p>
+     * This is a helper method that loops on the pixel array in order to write
+     * the image contents to the EPS File. It must be preceded by the relevant
+     * image operator and other parameters. This method should remain private
+     * and final because it has specific order dependencies and thus is of no
+     * use to downstream clients or derived classes.
+     *
+     * @param epsWriter The {@link EpsWriter} for writing the EPS content
+     * @param width     The source image width, in samples
+     * @param height    The source image height, in samples
+     * @param pixels    The pixel array to use for the EPS image
+     * @param colorMode The current active Color Mode for EPS operators
+     * @since 1.0
+     */
+    public static void writeEpsImageContents( final EpsWriter epsWriter,
+                                              final int width,
+                                              final int height,
+                                              final int[] pixels,
+                                              final ColorMode colorMode ) {
+        // Loop on the actual image content and write as successive two-digit
+        // hexadecimal strings. Insert newlines after every 64 characters.
+        StringBuilder contentLine = new StringBuilder();
+        for ( int y = 0; y < height; y++ ) {
+            for ( int x = 0; x < width; x++ ) {
+                final Color color = new Color( pixels[ x + ( width * y ) ] );
+
+                switch ( colorMode ) {
+                    case BITMAP:
+                        final String bitmapHexValue
+                                = ColorUtilities.rgbToBitmapHex( color );
+                        contentLine.append( bitmapHexValue );
+
+                        break;
+                    case GRAYSCALE:
+                        final String grayHexValue = ColorUtilities.rgbToGrayHex(
+                                color );
+                        contentLine.append( grayHexValue );
+
+                        break;
+                    case RGB:
+                        final String[] rgbHexValues
+                                = ColorUtilities.rgbToRgbHex( color );
+                        final String redHexValue
+                                = rgbHexValues[ ColorConstants.RGB_RED_INDEX ];
+                        final String greenHexValue
+                                =
+                                rgbHexValues[ ColorConstants.RGB_GREEN_INDEX ];
+                        final String blueHexValue
+                                = rgbHexValues[ ColorConstants.RGB_BLUE_INDEX ];
+
+                        contentLine.append( redHexValue );
+                        contentLine.append( greenHexValue );
+                        contentLine.append( blueHexValue );
+
+                        break;
+                    case CMYK:
+                        final String[] cmykHexValues
+                                = ColorUtilities.rgbToCmykHex( color );
+                        final String cyanHexValue
+                                =
+                                cmykHexValues[ ColorConstants.CMYK_CYAN_INDEX ];
+                        final String magentaHexValue
+                                =
+                                cmykHexValues[ ColorConstants.CMYK_MAGENTA_INDEX ];
+                        final String yellowHexValue
+                                =
+                                cmykHexValues[ ColorConstants.CMYK_YELLOW_INDEX ];
+                        final String blackHexValue
+                                =
+                                cmykHexValues[ ColorConstants.CMYK_BLACK_INDEX ];
+
+                        contentLine.append( cyanHexValue );
+                        contentLine.append( magentaHexValue );
+                        contentLine.append( yellowHexValue );
+                        contentLine.append( blackHexValue );
+
+                        break;
+                    default:
+                        break;
+                }
+
+                // Try to keep the resulting EPS file human-readable by limiting
+                // to 64 characters per line (although 255 characters per line
+                // is the official limit for EPS).
+                if ( contentLine.length() > 64 ) {
+                    epsWriter.append( contentLine.toString() );
+
+                    contentLine = new StringBuilder();
+                }
+            }
+        }
+
+        // Write the remaining hexadecimal characters that overflowed from the
+        // final line written inside the 64-character loop above.
+        if ( contentLine.length() > 0 ) {
+            epsWriter.append( contentLine.toString() );
+        }
+    }
 }

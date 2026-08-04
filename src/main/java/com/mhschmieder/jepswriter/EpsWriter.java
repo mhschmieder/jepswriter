@@ -42,18 +42,15 @@ package com.mhschmieder.jepswriter;
  * the proven EPS operator handling in this library, which is more adherent to
  * specifications than other EPS libraries currently available.
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public interface EpsWriter {
 
     /**
      * Appends a line to the EPS Document.
      *
-     * @param contentLine
-     *            The new content line to write to the EPS Document
-     *
+     * @param contentLine The new content line to write to the EPS Document
      * @since 1.0
      */
     void append( final String contentLine );
@@ -68,31 +65,23 @@ public interface EpsWriter {
      * must be self-consistent. They are used to scale the graphics operations
      * to avoid clipping, and are specified from the point of view of paper
      * oriented actions such as typing and printing, with the minimum (x, y)
-     * coordinates at top of page and the maximum coordinates at bottom of page.
+     * coordinates at top of page and the maximum coordinates at bottom of
+     * page.
      *
-     * @param title
-     *            The {@link String} to use as the EPS Document's title
-     * @param creator
-     *            The {@link String} to use as the EPS Document's creator
-     * @param pageWidth
-     *            The target page width, in points (1/72 inch)
-     * @param pageHeight
-     *            The target page height, in points (1/72 inch)
-     * @param minX
-     *            The x-coordinate of the EPS content top left corner
-     *            (unit-agnostic)
-     * @param minY
-     *            The y-coordinate of the EPS content top left corner
-     *            (unit-agnostic)
-     * @param maxX
-     *            The x-coordinate of the EPS content bottom right corner
-     *            (unit-agnostic)
-     * @param maxY
-     *            The y-coordinate of the EPS content bottom right corner
-     *            (unit-agnostic)
-     *
+     * @param title      The {@link String} to use as the EPS Document's title
+     * @param creator    The {@link String} to use as the EPS Document's
+     *                   creator
+     * @param pageWidth  The target page width, in points (1/72 inch)
+     * @param pageHeight The target page height, in points (1/72 inch)
+     * @param minX       The x-coordinate of the EPS content top left corner
+     *                   (unit-agnostic)
+     * @param minY       The y-coordinate of the EPS content top left corner
+     *                   (unit-agnostic)
+     * @param maxX       The x-coordinate of the EPS content bottom right corner
+     *                   (unit-agnostic)
+     * @param maxY       The y-coordinate of the EPS content bottom right corner
+     *                   (unit-agnostic)
      * @return The String that represents the entire EPS Document
-     *
      * @since 1.0
      */
     String getEpsDocument( final String title,
@@ -103,5 +92,4 @@ public interface EpsWriter {
                            final float minY,
                            final float maxX,
                            final float maxY );
-
 }

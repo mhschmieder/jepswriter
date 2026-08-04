@@ -49,8 +49,7 @@ public class EpsRenderingHintsKey extends RenderingHints.Key {
      * of a given class with the same integer key as a pre-existing instance of
      * that subclass of {@link EpsRenderingHintsKey}.
      *
-     * @param privateKey
-     *            the specified key
+     * @param privateKey the specified key
      */
     public EpsRenderingHintsKey( final int privateKey ) {
         super( privateKey );
@@ -60,26 +59,25 @@ public class EpsRenderingHintsKey extends RenderingHints.Key {
      * Returns {@code true} if the key value is compatible with this key, and
      * {@code false} otherwise.
      *
-     * @param val
-     *            the key value.
-     *
+     * @param val the key value.
      * @return A flag for whether the.
      */
     @Override
     public boolean isCompatibleValue( final Object val ) {
         boolean compatibleValue = false;
-        
+
         switch ( intKey() ) {
-        case 0:
-            compatibleValue = ( val == null )
-                || EpsRenderingHints.VALUE_TEXT_RENDERING_MODE_TEXT.equals( val )
-                || EpsRenderingHints.VALUE_TEXT_RENDERING_MODE_VECTOR.equals( val );
-            break;
-        default:
-            throw new RuntimeException( "Unsupported Rendering Hint Key" ); //$NON-NLS-1$
+            case 0:
+                compatibleValue = ( val == null )
+                                  || EpsRenderingHints.VALUE_TEXT_RENDERING_MODE_TEXT.equals(
+                        val )
+                                  || EpsRenderingHints.VALUE_TEXT_RENDERING_MODE_VECTOR.equals(
+                        val );
+                break;
+            default:
+                throw new RuntimeException( "Unsupported Rendering Hint Key" ); //$NON-NLS-1$
         }
-        
+
         return compatibleValue;
     }
-
 }

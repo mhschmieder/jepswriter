@@ -44,16 +44,17 @@ import org.apache.commons.math3.util.FastMath;
  * floating-point, to be compatible with the largest number of EPS clients, as
  * the EPS format generally requires single-precision precision and integers.
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public final class EpsDocumentUtilities {
 
     /**
-     * The default constructor is disabled, as this is a static utilities class.
+     * The default constructor is disabled, as this is a static utilities
+     * class.
      */
-    private EpsDocumentUtilities() {}
+    private EpsDocumentUtilities() {
+    }
 
     /**
      * Starts the EPS Document by writing its DSC-compliant EPS Header, and then
@@ -63,31 +64,25 @@ public final class EpsDocumentUtilities {
      * The min/max pairs are unit-agnostic, but the units must be consistent.
      * They are used to scale the graphics operations to avoid clipping, and are
      * specified from the point of view of page-addressing, with the minimum
-     * coordinates at top of page and the maximum coordinates at bottom of page.
+     * coordinates at top of page and the maximum coordinates at bottom of
+     * page.
      *
-     * @param stringBuilder
-     *            The {@link StringBuilder} for appending the EPS content
-     * @param title
-     *            The {@link String} to use as the EPS Document's title
-     * @param creator
-     *            The {@link String} to use as the EPS Document's creator
-     * @param pageWidth
-     *            The target page width, in points (1/72 inch)
-     * @param pageHeight
-     *            The target page height, in points (1/72 inch)
-     * @param minX
-     *            The x-coordinate of the EPS content top left corner
-     *            (unit-agnostic)
-     * @param minY
-     *            The y-coordinate of the EPS content top left corner
-     *            (unit-agnostic)
-     * @param maxX
-     *            The x-coordinate of the EPS content bottom right corner
-     *            (unit-agnostic)
-     * @param maxY
-     *            The y-coordinate of the EPS content bottom right corner
-     *            (unit-agnostic)
-     *
+     * @param stringBuilder The {@link StringBuilder} for appending the EPS
+     *                      content
+     * @param title         The {@link String} to use as the EPS Document's
+     *                      title
+     * @param creator       The {@link String} to use as the EPS Document's
+     *                      creator
+     * @param pageWidth     The target page width, in points (1/72 inch)
+     * @param pageHeight    The target page height, in points (1/72 inch)
+     * @param minX          The x-coordinate of the EPS content top left corner
+     *                      (unit-agnostic)
+     * @param minY          The y-coordinate of the EPS content top left corner
+     *                      (unit-agnostic)
+     * @param maxX          The x-coordinate of the EPS content bottom right
+     *                      corner (unit-agnostic)
+     * @param maxY          The y-coordinate of the EPS content bottom right
+     *                      corner (unit-agnostic)
      * @since 1.0
      */
     public static void startDocument( final StringBuilder stringBuilder,
@@ -136,11 +131,12 @@ public final class EpsDocumentUtilities {
         // is fairly specific to the needs of Adobe Distiller and/or importing
         // into Adobe Illustrator, but the resulting file can easily be rescaled
         // without loss of resolution.
-        final float scaleFactor = GraphicsUtilities
-                .calculateSourceToDestinationScaleFactor( sourceWidth,
-                                                          sourceHeight,
-                                                          pageWidth,
-                                                          pageHeight );
+        final float scaleFactor
+                = GraphicsUtilities.calculateSourceToDestinationScaleFactor(
+                sourceWidth,
+                sourceHeight,
+                pageWidth,
+                pageHeight );
 
         // Start the current page's content flow, adjusting (if necessary) to
         // avoid negative offsets that will be clipped.
@@ -163,16 +159,18 @@ public final class EpsDocumentUtilities {
         // are specified in page units (that is, pre-scaled).
         final float upperLeftX = -( minX * scaleFactor );
         final float upperLeftY = pageHeight + ( minY * scaleFactor );
-        EpsPageOperators.epsStartPage( stringBuilder, upperLeftX, upperLeftY, scaleFactor );
+        EpsPageOperators.epsStartPage( stringBuilder,
+                                       upperLeftX,
+                                       upperLeftY,
+                                       scaleFactor );
     }
 
     /**
      * Finishes the EPS Document by showing the current page, and then writing
      * the DSC-compliant EPS Footer.
      *
-     * @param stringBuilder
-     *            The {@link StringBuilder} for appending the EPS content
-     *
+     * @param stringBuilder The {@link StringBuilder} for appending the EPS
+     *                      content
      * @since 1.0
      */
     public static void finishDocument( final StringBuilder stringBuilder ) {
@@ -184,5 +182,4 @@ public final class EpsDocumentUtilities {
         // as the EPS format supports single-page output only.
         EpsDscUtilities.writeDscFooter( stringBuilder );
     }
-
 }
