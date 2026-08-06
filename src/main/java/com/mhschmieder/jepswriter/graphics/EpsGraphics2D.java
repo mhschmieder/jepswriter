@@ -794,7 +794,9 @@ public final class EpsGraphics2D extends Graphics2D {
                 x,
                 y );
         fill( shape );
-    }    /**
+    }
+
+    /**
      * Returns the current {@link Paint} attributes of this
      * {@link EpsGraphics2D} instance.
      *
@@ -819,7 +821,9 @@ public final class EpsGraphics2D extends Graphics2D {
                                  final float y ) {
         final Shape shape = glyphVector.getOutline( x, y );
         fill( shape );
-    }    /**
+    }
+
+    /**
      * Sets the {@link Paint} attribute for the {@link EpsGraphics2D} context.
      * Calling this method with a {@code null} {@link Paint} object does not
      * have any effect on the current {@link Paint} attribute of this
@@ -910,7 +914,9 @@ public final class EpsGraphics2D extends Graphics2D {
         final GraphicsConfiguration graphicsConfiguration
                 = GraphicsUtilities.getDeviceConfiguration();
         return graphicsConfiguration;
-    }    /**
+    }
+
+    /**
      * Returns the background color that is used by the {@link #clearRect}
      * method.
      *
@@ -933,7 +939,9 @@ public final class EpsGraphics2D extends Graphics2D {
     @Override
     public Graphics create() {
         return new EpsGraphics2D( this );
-    }    /**
+    }
+
+    /**
      * Sets the background color to be used by the {@link #clearRect} method;
      * {@code null} is permitted in order to be consistent with the reference
      * implementation's documentation, and is simply treated as a no-op.
@@ -969,7 +977,9 @@ public final class EpsGraphics2D extends Graphics2D {
     @Override
     public Color getColor() {
         return foregroundColor;
-    }    /**
+    }
+
+    /**
      * Returns the current {@link Composite} value for alpha transparency; not
      * supported by EPS or PostScript.
      *
@@ -1017,7 +1027,9 @@ public final class EpsGraphics2D extends Graphics2D {
         EpsGraphicsOperators.epsSetColor( epsDocument,
                                           foregroundColor,
                                           colorMode );
-    }    /**
+    }
+
+    /**
      * Sets the new {@link Composite} value for alpha transparency; not
      * supported by EPS or PostScript.
      *
@@ -1043,7 +1055,9 @@ public final class EpsGraphics2D extends Graphics2D {
      */
     public ColorMode getColorMode() {
         return epsColorMode;
-    }    /**
+    }
+
+    /**
      * Returns the {@link Stroke} currently in use. Guaranteed to be an instance
      * of {@link BasicStroke}.
      *
@@ -1064,7 +1078,9 @@ public final class EpsGraphics2D extends Graphics2D {
      */
     public void setColorMode( final ColorMode colorMode ) {
         epsColorMode = colorMode;
-    }    /**
+    }
+
+    /**
      * Sets the current stroke.
      * <p>
      * This method now accepts all stroke types, but anything not derived from
@@ -1114,7 +1130,9 @@ public final class EpsGraphics2D extends Graphics2D {
     @Override
     public void setPaintMode() {
         // Do nothing; paint overwrite mode is the only method supported anyway.
-    }    /**
+    }
+
+    /**
      * Returns the current value for the specified Rendering Hint.
      * <p>
      * See the {@link EpsRenderingHints} class for details on supported hints.
@@ -1142,7 +1160,9 @@ public final class EpsGraphics2D extends Graphics2D {
     @Override
     public void setXORMode( final Color color ) {
         // Do nothing; paint overwrite mode is the only method supported anyway.
-    }    /**
+    }
+
+    /**
      * Sets the value for the specified Rendering Hint.
      *
      * @param hintKey   The Rendering Hint key
@@ -1165,7 +1185,9 @@ public final class EpsGraphics2D extends Graphics2D {
     @Override
     public Font getFont() {
         return font;
-    }    /**
+    }
+
+    /**
      * Returns a copy of the Rendering Hints. Modifying the returned copy has no
      * impact on the state of this {@link EpsGraphics2D} instance.
      *
@@ -1206,7 +1228,9 @@ public final class EpsGraphics2D extends Graphics2D {
                 textRenderingMode ) ) {
             EpsGraphicsOperators.epsSetfont( epsDocument, font );
         }
-    }    /**
+    }
+
+    /**
      * Sets (replaces) the Rendering Hints to the specified collection.
      *
      * @param hints The new Rendering Hints ({@code null} not permitted)
@@ -1232,7 +1256,9 @@ public final class EpsGraphics2D extends Graphics2D {
     public FontMetrics getFontMetrics() {
         final Font currentFont = getFont();
         return getFontMetrics( currentFont );
-    }    /**
+    }
+
+    /**
      * Adds all of the supplied Rendering Hints to the existing collection.
      *
      * @param hints The Rendering Hints to add ({@code null} not permitted).
@@ -1257,7 +1283,9 @@ public final class EpsGraphics2D extends Graphics2D {
                 fontToMeasure );
 
         return fontMetrics;
-    }    /**
+    }
+
+    /**
      * Returns the default {@link FontRenderContext} used for measuring text for
      * Vectorized Text Mode.
      *
@@ -1577,7 +1605,9 @@ public final class EpsGraphics2D extends Graphics2D {
         fillRect( x, y, width, height );
 
         setPaint( previousColor );
-    }    /**
+    }
+
+    /**
      * Translates the origin of the EpsGraphics2D Graphics Context to the point
      * (x,y) in the current coordinate system.
      *
@@ -1616,7 +1646,9 @@ public final class EpsGraphics2D extends Graphics2D {
             setRoundRect( x, y, width, height, arcWidth, arcHeight );
             draw( roundRect );
         }
-    }    /**
+    }
+
+    /**
      * Concatenates the current EpsGraphics2D Transform with a translation
      * transform.
      *
@@ -1667,7 +1699,9 @@ public final class EpsGraphics2D extends Graphics2D {
         else {
             roundRect.setRoundRect( x, y, width, height, arcWidth, arcHeight );
         }
-    }    /**
+    }
+
+    /**
      * Concatenates the current EpsGraphics2D Transform with a rotation
      * transform.
      *
@@ -1704,7 +1738,9 @@ public final class EpsGraphics2D extends Graphics2D {
             setRoundRect( x, y, width, height, arcWidth, arcHeight );
             fill( roundRect );
         }
-    }    /**
+    }
+
+    /**
      * Concatenates the current EpsGraphics2D Transform with a translated
      * rotation transform.
      *
@@ -1734,7 +1770,9 @@ public final class EpsGraphics2D extends Graphics2D {
                           final int height ) {
         setOval( x, y, width, height );
         draw( oval );
-    }    /**
+    }
+
+    /**
      * Concatenates the current EpsGraphics2D Transform with a scaling
      * transformation.
      *
@@ -1771,7 +1809,9 @@ public final class EpsGraphics2D extends Graphics2D {
         else {
             oval.setFrame( x, y, width, height );
         }
-    }    /**
+    }
+
+    /**
      * Concatenates the current EpsGraphics2D Transform with a shearing
      * transform.
      *
@@ -1796,7 +1836,9 @@ public final class EpsGraphics2D extends Graphics2D {
                           final int height ) {
         setOval( x, y, width, height );
         fill( oval );
-    }    /**
+    }
+
+    /**
      * Composes an AffineTransform object with the Transform in this
      * EpsGraphics2D according to the rule last-specified-first-applied.
      *
@@ -1824,7 +1866,9 @@ public final class EpsGraphics2D extends Graphics2D {
                          final int arcAngle ) {
         setArc( x, y, width, height, startAngle, arcAngle, Arc2D.OPEN );
         draw( arc );
-    }    /**
+    }
+
+    /**
      * Returns a copy of the {@link AffineTransform} used by this
      * {@link EpsGraphics2D} instance.
      *
@@ -1881,7 +1925,9 @@ public final class EpsGraphics2D extends Graphics2D {
                         arcAngle,
                         closureType );
         }
-    }    /**
+    }
+
+    /**
      * Sets the AffineTransform to be used by this EpsGraphics2D, or resets to
      * the identity transform if {@code null} is passed as the new transform.
      *
@@ -1913,7 +1959,9 @@ public final class EpsGraphics2D extends Graphics2D {
                          final int arcAngle ) {
         setArc( x, y, width, height, startAngle, arcAngle, Arc2D.PIE );
         fill( arc );
-    }    /**
+    }
+
+    /**
      * Intersects the current clip with the interior of the specified Shape and
      * sets the clip to the resulting intersection.
      *
@@ -2324,52 +2372,4 @@ public final class EpsGraphics2D extends Graphics2D {
 
         return rectangle;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
